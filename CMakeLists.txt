@@ -32,7 +32,7 @@ function (example_project project_name source_code)
     example_project_extra(${project_name} ${source_code} "")
 endfunction ()
 
-example_project(Arrancar0 "tutorial.cc")
+example_project(Arrancar0 "Arrancar0.cpp")
 
 if (NOT APPLE)
     example_project_extra(feature_layers "feature_layers.cc" sc2renderer)
