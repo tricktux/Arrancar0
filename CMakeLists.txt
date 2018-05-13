@@ -1,5 +1,6 @@
-include_directories("../s2client-api/include")
-include_directories("common")
+include_directories("s2client-api/include")
+include_directories("include")
+include_directories("include/common")
 
 # Setup MSVC parallelized builds
 add_compile_options($<$<CXX_COMPILER_ID:MSVC>:/MP>)
