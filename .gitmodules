@@ -6,4 +6,4 @@
 	url = https://github.com/pimmen/Overseer.git
 [submodule "s2client-api"]
 	path = s2client-api
-	url = https://github.com/Cryptyc/Sc2LadderServer
+	url = https://github.com/Blizzard/s2client-api

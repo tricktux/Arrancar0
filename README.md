@@ -15,3 +15,6 @@ Starcraft II Artificial Intelligence Bot
 
 ### Best Source of Info
 - [Starcraft 2 AI Ladder Wiki](http://wiki.sc2ai.net/Main_Page)
+
+## Instructions to download SC2 and Maps
+- [Here](https://github.com/Blizzard/s2client-proto#linux-packages)
