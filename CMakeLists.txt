@@ -1,46 +1,18 @@
-cmake_minimum_required(VERSION 3.11)
+cmake_minimum_required(VERSION 3.1)
 
-project (Arrancar0)
+project(Arrancar)
 
-include_directories("s2client-api/include")
-include_directories("s2client-api/examples/common")
-include_directories("include")
+# Specify output directories.
+set(EXECUTABLE_OUTPUT_PATH "${PROJECT_BINARY_DIR}/bin")
 
-# Setup MSVC parallelized builds
-add_compile_options($<$<CXX_COMPILER_ID:MSVC>:/MP>)
+# Include custom macros to find SC2Api.
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-# Included for all examples
-# include_directories(SYSTEM "${PROJECT_BINARY_DIR}/generated")
-# include_directories(SYSTEM "${CMAKE_SOURCE_DIR}/contrib/SDL-mirror/include")
+set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
-# Function to generate an example project with extra libraries
-function (example_project_extra project_name source_code extra_libs)
-    message("Adding new example project ${project_name}, sources: ${source_code}, extra_libs: ${extra_libs}")
-    file (GLOB example_project_sources ${source_code} "common/*.h" "common/*.cc")
-    add_executable(${project_name} ${example_project_sources})
+find_package(SC2Api REQUIRED)
 
-    set_target_properties(${project_name} PROPERTIES FOLDER src)
+# Build with c++14 support, required by sc2api.
+set(CMAKE_CXX_STANDARD 14)
 
-	if (MSVC)
-		# set_target_properties(${project_name} PROPERTIES LINK_FLAGS "/NODEFAULTLIB:libcmt;libconcrt")
-	endif ()
-
-	if (MSCV AND (NOT (MSVC_VERSION LESS 1910)))
-		target_link_libraries(${project_name} legacy_stdio_definitions)
-	endif ()
-
-    target_link_libraries(${project_name} sc2api sc2lib sc2utils ${extra_libs})
-endfunction ()
-
-# Function to generate a simple example project
-function (example_project project_name source_code)
-    example_project_extra(${project_name} ${source_code} "")
-endfunction ()
-
-example_project_extra(Arrancar0 "src/Arrancar0.cpp" glog)
-
-if (NOT APPLE)
-    example_project_extra(feature_layers "src/feature_layers.cc" sc2renderer)
-    example_project_extra(rendered "src/rendered.cc" sc2renderer)
-endif ()
-
+add_subdirectory("src")
