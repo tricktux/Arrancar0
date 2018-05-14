@@ -12,6 +12,7 @@ Starcraft II Artificial Intelligence Bot
 - [Starcraft 2 AI Ladder](http://sc2ai.net)
 - [TechLab](https://github.com/IanGallacher/TechLab)
 	- Inspired by David Churchill's CommandCenter, this aims to give existing SC2 bots a higher level set of function calls.
+- [CommandCenter](https://github.com/davechurchill/commandcenter)
 
 ### Best Source of Info
 - [Starcraft 2 AI Ladder Wiki](http://wiki.sc2ai.net/Main_Page)
