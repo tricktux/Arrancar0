@@ -1,13 +1,17 @@
+cmake_minimum_required(VERSION 3.11)
+
+project (Arrancar0)
+
 include_directories("s2client-api/include")
+include_directories("s2client-api/examples/common")
 include_directories("include")
-include_directories("include/common")
 
 # Setup MSVC parallelized builds
 add_compile_options($<$<CXX_COMPILER_ID:MSVC>:/MP>)
 
 # Included for all examples
-include_directories(SYSTEM "${PROJECT_BINARY_DIR}/generated")
-include_directories(SYSTEM "${CMAKE_SOURCE_DIR}/contrib/SDL-mirror/include")
+# include_directories(SYSTEM "${PROJECT_BINARY_DIR}/generated")
+# include_directories(SYSTEM "${CMAKE_SOURCE_DIR}/contrib/SDL-mirror/include")
 
 # Function to generate an example project with extra libraries
 function (example_project_extra project_name source_code extra_libs)
@@ -15,7 +19,7 @@ function (example_project_extra project_name source_code extra_libs)
     file (GLOB example_project_sources ${source_code} "common/*.h" "common/*.cc")
     add_executable(${project_name} ${example_project_sources})
 
-    set_target_properties(${project_name} PROPERTIES FOLDER examples)
+    set_target_properties(${project_name} PROPERTIES FOLDER src)
 
 	if (MSVC)
 		# set_target_properties(${project_name} PROPERTIES LINK_FLAGS "/NODEFAULTLIB:libcmt;libconcrt")
@@ -33,10 +37,10 @@ function (example_project project_name source_code)
     example_project_extra(${project_name} ${source_code} "")
 endfunction ()
 
-example_project(Arrancar0 "Arrancar0.cpp")
+example_project_extra(Arrancar0 "src/Arrancar0.cpp" glog)
 
 if (NOT APPLE)
-    example_project_extra(feature_layers "feature_layers.cc" sc2renderer)
-    example_project_extra(rendered "rendered.cc" sc2renderer)
+    example_project_extra(feature_layers "src/feature_layers.cc" sc2renderer)
+    example_project_extra(rendered "src/rendered.cc" sc2renderer)
 endif ()
 
