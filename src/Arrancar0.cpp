@@ -1,21 +1,27 @@
 #include <sc2api/sc2_api.h>
 
+#include <glog/logging.h>
+
 #include <iostream>
 
 class Bot : public sc2::Agent {
 public:
-    virtual void OnGameStart() final {
-        std::cout << "Hello, World!" << std::endl;
-    }
+    virtual void OnGameStart() final { LOG(INFO) << "Hello Word!!\n"; }
 
-    virtual void OnStep() final {
-        std::cout << Observation()->GetGameLoop() << std::endl;
+    virtual void OnStep() final
+	{
+		LOG(INFO) << "Game Loop = " << Observation()->GetGameLoop() << "\n";
+		LOG(INFO) << "Minerals = " << Observation()->GetMinerals() << "\n";
+		LOG(INFO) << "Vespene Gas = " << Observation()->GetVespene() << "\n";
     }
 };
 
 int main(int argc, char* argv[]) {
 	sc2::Coordinator coordinator;
     coordinator.LoadSettings(argc, argv);
+
+	// Initialize Google's logging library.
+	google::InitGoogleLogging(argv[0]);
 
     Bot bot;
     coordinator.SetParticipants({

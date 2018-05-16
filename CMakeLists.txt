@@ -12,7 +12,11 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
 find_package(SC2Api REQUIRED)
 
+find_package(RapidJSON CONFIG REQUIRED)
+
+# find_package(Glog CONFIG REQUIRED)
+
 # Build with c++14 support, required by sc2api.
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 
 add_subdirectory("src")

@@ -6,6 +6,8 @@ Starcraft II Artificial Intelligence Bot
 - [glog](https://github.com/google/glog)
 	- `glog` [help](http://rpg.ifi.uzh.ch/docs/glog.html)
 	- Arch community package: `google-glog`
+- [rapidjson]()
+	- Arch community package `rapidjson`
 
 ## Links of Interest:
 - [Sc2LadderServer](https://github.com/Cryptyc/Sc2LadderServer)
