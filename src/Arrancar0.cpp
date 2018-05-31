@@ -2,7 +2,10 @@
 
 #include <glog/logging.h>
 
+#include <rapidjson/document.h>
+
 #include <iostream>
+
 
 class Bot : public sc2::Agent {
 public:
@@ -19,6 +22,9 @@ public:
 int main(int argc, char* argv[]) {
 	sc2::Coordinator coordinator;
     coordinator.LoadSettings(argc, argv);
+
+	rapidjson::Document document;
+	document.Parse("~/.ao.json");
 
 	// Initialize Google's logging library.
 	google::InitGoogleLogging(argv[0]);
