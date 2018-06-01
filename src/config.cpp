@@ -17,12 +17,16 @@
 
 void config::parse_arguments(int num_options, char* options[])
 {
+	std::vector<std::string> _options;
+	_options.reserve(8); 
+
 	for (int k=0; k<num_options; k++)
 	{
 		LOG(INFO) << "cmd line arg#" << k << " = " << options[k] << "\n";
 	}
 
 	// Search for config option -c <file location>
+	bool found = false;
 	for (auto&& opt : _options)
 	{
 		if ((!opt.empty()) && (opt.size() > 3) && (opt.compare(config_cmd_option) == 0))
@@ -30,9 +34,13 @@ void config::parse_arguments(int num_options, char* options[])
 
 			LOG(INFO) << "Found config option: " << opt << "\n";
 			config_file_location = opt.substr(3);
+			found = true;
 			break;
 		}
 	}
+
+	if (found == false)
+		LOG(WARNING) << "configuration option (-c) not provided, using default\n";
 }
 
 int config::parse_config_file(void)

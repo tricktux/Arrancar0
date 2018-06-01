@@ -36,10 +36,15 @@ int main(int argc, char* argv[]) {
 	// Initialize Google's logging library.
 	google::InitGoogleLogging(argv[0]);
 
+	// TODO-[RM]-(Fri Jun 01 2018 07:55)
+	// - Make this Coordinator a Singleton
+	sc2::Coordinator coordinator;
+
 	config &cfg = config::get_config();
 
-	sc2::Coordinator coordinator;
-    coordinator.LoadSettings(argc, argv);
+	cfg.parse_arguments(argc, argv);
+	if (cfg.parse_config_file() < 1)
+		coordinator.LoadSettings(argc, argv);
 
     Bot bot;
     coordinator.SetParticipants({

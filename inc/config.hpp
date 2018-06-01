@@ -14,17 +14,11 @@ class config
 	const std::string_view config_cmd_option = "-c";
 	const std::string_view config_default_name = "config.json";
 
-	std::vector<std::string> _options;
 	rapidjson::Document config_file;
 	std::string config_file_location;
 
-
 public:
-	config() :
-		config_file_location(config_default_name)
-	{ 
-		_options.reserve(8); 
-	}
+	config() : config_file_location(config_default_name) {}
 
 	static config& get_config(void)
 	{
