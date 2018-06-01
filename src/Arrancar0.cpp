@@ -1,10 +1,23 @@
+// File:           Arrancar0.cpp
+// Description:    Main entry point for the SC2Bot
+// Author:		    Reinaldo Molina
+// Email:          rmolin88 at gmail dot com
+// Created:        Fri Jun 01 2018 03:58
+// Last Modified:  Fri Jun 01 2018 03:58
+
 #include <sc2api/sc2_api.h>
 
 #include <glog/logging.h>
 
+#include <iostream>
+#include <string>
+#include <string_view>
+#include <vector>
+#include <map>
+
 #include <rapidjson/document.h>
 
-#include <iostream>
+#include "../inc/config.hpp"
 
 
 class Bot : public sc2::Agent {
@@ -20,14 +33,13 @@ public:
 };
 
 int main(int argc, char* argv[]) {
-	sc2::Coordinator coordinator;
-    coordinator.LoadSettings(argc, argv);
-
-	rapidjson::Document document;
-	document.Parse("~/.ao.json");
-
 	// Initialize Google's logging library.
 	google::InitGoogleLogging(argv[0]);
+
+	config &cfg = config::get_config();
+
+	sc2::Coordinator coordinator;
+    coordinator.LoadSettings(argc, argv);
 
     Bot bot;
     coordinator.SetParticipants({
@@ -36,7 +48,7 @@ int main(int argc, char* argv[]) {
     });
 
     coordinator.LaunchStarcraft();
-    coordinator.StartGame(sc2::kMapBelShirVestigeLE);
+    coordinator.StartGame();
 
     while (coordinator.Update()) {}
 
