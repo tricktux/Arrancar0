@@ -1,5 +1,5 @@
 # All the source files for the bot.
-file(GLOB SOURCES "*.cpp" "../inc/*.h")
+file(GLOB SOURCES "*.cpp" "../inc/*.hpp")
 
 include_directories(SYSTEM
 	"${SC2Api_INCLUDE_DIRS}"
