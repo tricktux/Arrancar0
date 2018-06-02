@@ -26,6 +26,9 @@ public:
 		return rc;
 	}
 
+	config(config const&) = delete;
+	void operator=(config const&) = delete;
+
 	void parse_arguments(int num_options, char *options[]);
 	int parse_config_file(void);
 };

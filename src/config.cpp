@@ -46,5 +46,15 @@ void config::parse_arguments(int num_options, char* options[])
 int config::parse_config_file(void)
 {
 	config_file.Parse(config_file_location.c_str());
+
+	if (confi_file.HasParseError())
+	{
+		LOG(ERROR)	<< "Error ("
+					<< static_cast<unsigned>(confi_file.GetErrorOffset())
+					<< "): "
+					<< GetParseError_En(reader.GetParseErrorCode()))
+					<< '\n';
+		return -1;
+	}
 	return 1;
 }

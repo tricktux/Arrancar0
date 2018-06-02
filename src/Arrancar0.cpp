@@ -18,6 +18,7 @@
 #include <rapidjson/document.h>
 
 #include "../inc/config.hpp"
+#include "../inc/coordinator.hpp"
 
 
 class Bot : public sc2::Agent {
@@ -36,26 +37,24 @@ int main(int argc, char* argv[]) {
 	// Initialize Google's logging library.
 	google::InitGoogleLogging(argv[0]);
 
-	// TODO-[RM]-(Fri Jun 01 2018 07:55)
-	// - Make this Coordinator a Singleton
-	sc2::Coordinator coordinator;
+	sc2::Coordinator &sc2_coordinator = coordinator::get_coordinator();
 
 	config &cfg = config::get_config();
 
 	cfg.parse_arguments(argc, argv);
 	if (cfg.parse_config_file() < 1)
-		coordinator.LoadSettings(argc, argv);
+		sc2_coordinator.LoadSettings(argc, argv);
 
     Bot bot;
-    coordinator.SetParticipants({
+    sc2_coordinator.SetParticipants({
 		sc2::CreateParticipant(sc2::Race::Terran, &bot),
         sc2::CreateComputer(sc2::Race::Zerg)
     });
 
-    coordinator.LaunchStarcraft();
-    coordinator.StartGame();
+    sc2_coordinator.LaunchStarcraft();
+    sc2_coordinator.StartGame();
 
-    while (coordinator.Update()) {}
+    while (sc2_coordinator.Update()) {}
 
     return 0;
 }
