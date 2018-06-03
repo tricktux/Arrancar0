@@ -17,8 +17,8 @@
 
 #include <rapidjson/document.h>
 
-#include "../inc/config.hpp"
-#include "../inc/coordinator.hpp"
+#include "config.hpp"
+#include "coordinator.hpp"
 
 
 // TODO-[RM]-(Sun Jun 03 2018 17:07):  Move this to its own class

@@ -2,7 +2,7 @@
 #include <rapidjson/document.h>
 #include <rapidjson/error/en.h>
 
-#include "../inc/config.hpp"
+#include "config.hpp"
 
 TEST(FactorialTest, Negative) {
 	// This test is named "Negative", and belongs to the "FactorialTest"
