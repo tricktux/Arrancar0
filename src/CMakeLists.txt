@@ -1,10 +1,11 @@
 # All the source files for the bot.
-file(GLOB SOURCES "*.cpp" "../inc/*.hpp")
+file(GLOB SOURCES "*.cpp")
+
+include_directories(${CMAKE_SOURCE_DIR}/inc)
 
 include_directories(SYSTEM
 	"${SC2Api_INCLUDE_DIRS}"
 	"${GLOG_INCLUDE_DIRS}"
-	"${GTEST_INCLUDE_DIRS}"
 	"${RAPIDJSON_INCLUDE_DIRS}"
 	)
 
@@ -20,7 +21,6 @@ add_executable(Arrancar0 ${SOURCES})
 target_link_libraries(Arrancar0
 	${SC2Api_LIBRARIES}
 	${GLOG_LIBRARIES}
-	${GTEST_BOTH_LIBRARIES}
 	)
 
 if (APPLE)
