@@ -21,6 +21,7 @@
 #include "../inc/coordinator.hpp"
 
 
+// TODO-[RM]-(Sun Jun 03 2018 17:07):  Move this to its own class
 class Bot : public sc2::Agent {
 public:
     virtual void OnGameStart() final { LOG(INFO) << "Hello Word!!\n"; }
@@ -37,13 +38,13 @@ int main(int argc, char* argv[]) {
 	// Initialize Google's logging library.
 	google::InitGoogleLogging(argv[0]);
 
-	sc2::Coordinator &sc2_coordinator = coordinator::get_coordinator();
-
 	config &cfg = config::get_config();
 
 	cfg.parse_arguments(argc, argv);
-	if (cfg.parse_config_file() < 1)
-		sc2_coordinator.LoadSettings(argc, argv);
+	// if (cfg.parse_config_file() < 1)
+		// sc2_coordinator.LoadSettings(argc, argv);
+
+	sc2::Coordinator &sc2_coordinator = coordinator::get_coordinator();
 
     Bot bot;
     sc2_coordinator.SetParticipants({

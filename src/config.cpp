@@ -12,7 +12,9 @@
 #include <map>
 
 #include <rapidjson/document.h>
+#include <rapidjson/error/en.h>
 #include <glog/logging.h>
+
 #include "../inc/config.hpp"
 
 void config::parse_arguments(int num_options, char* options[])
@@ -51,7 +53,8 @@ int config::parse_config_file(void)
 	{
 		LOG(ERROR)	<< "Error ("
 					<< static_cast<unsigned>(config_file.GetErrorOffset())
-					<< "): Need to figure out how to get error"
+					<< "): "
+					<< rapidjson::GetParseError_En(config_file.GetParseError())
 					<< '\n';
 		return -1;
 	}
