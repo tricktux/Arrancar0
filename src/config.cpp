@@ -69,7 +69,7 @@ int config::parse_config_file(void)
 
 	config_file.Parse(config_file_location.c_str());
 
-	if (config_file.HasParseError())
+	if (config_file.HasParseError() == true)
 	{
 		LOG(ERROR)	<< "Error ("
 					<< static_cast<unsigned>(config_file.GetErrorOffset())
