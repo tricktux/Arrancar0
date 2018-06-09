@@ -6,11 +6,11 @@ include_directories(SYSTEM
 	"${GTEST_INCLUDE_DIRS}"
 	)
 
-add_executable(test_config test_config.cpp ../src/config.cpp)
+add_executable(test_config test_config.cpp ${CMAKE_SOURCE_DIR}/src/config.cpp)
 
 # Link test executable against gtest & gtest_main
 target_link_libraries(test_config
 	${GTEST_BOTH_LIBRARIES}
 	${GLOG_LIBRARIES}
 	)
-add_test(test_config runUnitTests )
+add_test(test_config ${CMAKE_SOURCE_DIR}/build/bin/test_config)
