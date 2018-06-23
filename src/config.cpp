@@ -12,6 +12,7 @@
 #include <fstream>
 #include <map>
 #include <fstream>
+#include <sstream>
 
 #include <rapidjson/document.h>
 #include <rapidjson/error/en.h>
@@ -31,7 +32,6 @@ void config::parse_arguments(int num_options, char* options[])
 	}
 
 	// Search for config option -c <file location>
-	bool found = false;
 	std::string::size_type sz = config_cmd_option.size();
 	for (auto& opt : _options)
 	{
@@ -43,18 +43,19 @@ void config::parse_arguments(int num_options, char* options[])
 				(opt.compare(0, sz, config_cmd_option) == 0))
 		{
 			LOG(INFO) << "Found config option: " << opt << "\n";
-			config_file_location = opt.substr(3);
-			found = true;
+			config_file_location = opt.substr(sz+1);
 			break;
 		}
 	}
 
-	if (found == false)
+	if (config_file_location.empty())
 		LOG(WARNING) << "Configuration option (-c) not provided, using default\n";
 }
 
 int config::parse_config_file(void)
 {
+	std::ostringstream file_content;
+
 	{
 		std::ifstream ifs(config_file_location);
 
@@ -65,16 +66,20 @@ int config::parse_config_file(void)
 				<< '\n';
 			return -1;
 		}
+
+		LOG(INFO) << "config_file_location = " <<  config_file_location.c_str() << '\n'; 
+
+		file_content << ifs.rdbuf();
 	} // Close ifs
 
-	config_file.Parse(config_file_location.c_str());
+	rapidjson::ParseResult rc = config_file.Parse(file_content.str().c_str());
 
-	if (config_file.HasParseError() == true)
+	if (rc.IsError() == true)
 	{
 		LOG(ERROR)	<< "Error ("
-					<< static_cast<unsigned>(config_file.GetErrorOffset())
+					<< static_cast<unsigned>(rc.Offset())
 					<< "): " 
-					<< rapidjson::GetParseError_En(config_file.GetParseError())
+					<< rapidjson::GetParseError_En(rc.Code())
 					<< '\n';
 		return -2;
 	}
