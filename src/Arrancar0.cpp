@@ -40,8 +40,8 @@ int main(int argc, char* argv[]) {
 
 	config &cfg = config::get_config();
 
-	cfg.parse_arguments(argc, argv);
-	// if (cfg.parse_config_file() < 1)
+	cfg.parse_config_file(argc, argv);
+	// if (cfg.load_config_file() < 1)
 		// sc2_coordinator.LoadSettings(argc, argv);
 
 	sc2::Coordinator &sc2_coordinator = coordinator::get_coordinator();

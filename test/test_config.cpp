@@ -13,8 +13,7 @@ TEST(Config, GoodConfigFile) {
 
 	config &cfg = config::get_config();
 
-	cfg.parse_arguments(1, cmd_opts);
-	int ret = cfg.parse_config_file();
+	int ret = cfg.parse_config_file(1, cmd_opts);
 
 	EXPECT_EQ(1,ret);
 }

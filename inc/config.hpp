@@ -9,7 +9,7 @@
 #ifndef CONFIG_HPP
 #define CONFIG_HPP
 
-class config 
+class config
 {
 	const std::string_view config_cmd_option = "-c";
 	const std::string_view config_default_name = "config.json";
@@ -17,6 +17,8 @@ class config
 	rapidjson::Document config_file;
 	std::string config_file_location;
 
+	void parse_arguments(int num_options, char *options[]);
+	int load_config_file(void);
 public:
 	config() : config_file_location(config_default_name) {}
 
@@ -29,8 +31,7 @@ public:
 	config(config const&) = delete;
 	void operator=(config const&) = delete;
 
-	void parse_arguments(int num_options, char *options[]);
-	int parse_config_file(void);
+	int parse_config_file(int num_options, char **arguments);
 };
 
 #endif

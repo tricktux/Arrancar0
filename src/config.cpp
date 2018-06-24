@@ -18,12 +18,18 @@
 #include <rapidjson/error/en.h>
 #include <glog/logging.h>
 
-#include "../inc/config.hpp"
+#include "config.hpp"
 
 void config::parse_arguments(int num_options, char* options[])
 {
+	if (num_options < 1)
+		return;
+
+	if (options == nullptr)
+		return;
+
 	std::vector<std::string> _options;
-	_options.reserve(8); 
+	_options.reserve(8);
 
 	for (int k=0; k<num_options; k++)
 	{
@@ -52,8 +58,11 @@ void config::parse_arguments(int num_options, char* options[])
 		LOG(WARNING) << "Configuration option (-c) not provided, using default\n";
 }
 
-int config::parse_config_file(void)
+int config::load_config_file(void)
 {
+	if (config_file_location.empty())
+		return -1;
+
 	std::ostringstream file_content;
 
 	{
@@ -64,10 +73,10 @@ int config::parse_config_file(void)
 			LOG(ERROR) << "Failed to open file: "
 				<< config_file_location
 				<< '\n';
-			return -1;
+			return -2;
 		}
 
-		LOG(INFO) << "config_file_location = " <<  config_file_location.c_str() << '\n'; 
+		LOG(INFO) << "config_file_location = " <<  config_file_location.c_str() << '\n';
 
 		file_content << ifs.rdbuf();
 	} // Close ifs
@@ -78,10 +87,18 @@ int config::parse_config_file(void)
 	{
 		LOG(ERROR)	<< "Error ("
 					<< static_cast<unsigned>(rc.Offset())
-					<< "): " 
+					<< "): "
 					<< rapidjson::GetParseError_En(rc.Code())
 					<< '\n';
-		return -2;
+		return -3;
 	}
+
+	return 1;
+}
+
+int parse_config_file(int num_options, char **arguments)
+{
+	// Call parse_arguments
+	// Call load_config_file
 	return 1;
 }
