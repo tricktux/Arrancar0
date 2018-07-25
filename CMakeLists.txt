@@ -16,7 +16,6 @@ find_package(RapidJSON REQUIRED)
 
 find_package(GLog REQUIRED)
 
-# Include custom macros to find SC2Api.
 find_package(GTest REQUIRED)
 
 # Build with c++14 support, required by sc2api.
