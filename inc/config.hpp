@@ -22,7 +22,7 @@ class config
 	std::string config_file_location;
 
 	// Search for CMD_OPTION inside arguments. Called fromm parse_config_file
-	void parse_arguments(int num_options, char *options[]);
+	void parse_arguments(int num_options, const char *options[]);
 
 	// If CMD_OPTION found in parse_arguments attempt to load json file using rapidjson
 	int load_config_file(void);
@@ -38,7 +38,7 @@ public:
 	config(config const&) = delete;
 	void operator=(config const&) = delete;
 
-	int parse_config_file(int num_options, char **arguments);
+	int parse_config_file(int num_options, const char **arguments);
 };
 
 #endif
