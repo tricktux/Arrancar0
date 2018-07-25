@@ -1,14 +1,15 @@
 #include <gtest/gtest.h>
+#include <glog/logging.h>
 #include <rapidjson/document.h>
 #include <rapidjson/error/en.h>
 
 #include "config.hpp"
 
-TEST(Config, GoodConfigFile) {
+TEST(Config, DefaultConfigFile) {
 	int argc = 1;
-	char *cmd_opts[] = 
+	const char *cmd_opts[] = 
 	{
-		"-c /home/reinaldo/Documents/ML_SC2/Arrancar0/test/config/config.json",
+		"DefaultConfigFile",
 	};
 
 	config &cfg = config::get_config();
@@ -16,4 +17,15 @@ TEST(Config, GoodConfigFile) {
 	int ret = cfg.parse_config_file(1, cmd_opts);
 
 	EXPECT_EQ(1,ret);
+}
+
+int main(int argc, char *argv[])
+{
+	// Logging flags
+	FLAGS_logtostderr = 1;
+	FLAGS_colorlogtostderr = 1;
+
+	::google::InitGoogleLogging(argv[0]);
+	::testing::InitGoogleTest(&argc, argv);
+	return RUN_ALL_TESTS();
 }

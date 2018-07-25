@@ -34,7 +34,7 @@ public:
     }
 };
 
-int main(int argc, char* argv[]) {
+int main(int argc, const char* argv[]) {
 	// Initialize Google's logging library.
 	google::InitGoogleLogging(argv[0]);
 

@@ -20,7 +20,7 @@
 
 #include "config.hpp"
 
-void config::parse_arguments(int num_options, char* options[])
+void config::parse_arguments(int num_options, const char* options[])
 {
 	if (num_options < 1)
 		return;
@@ -96,14 +96,13 @@ int config::load_config_file(void)
 	return 1;
 }
 
-int config::parse_config_file(int num_options, char **arguments)
+// Handle the case where no command options are sent
+int config::parse_config_file(int num_options, const char **arguments)
 {
 	if (num_options < 1)
 		return -1;
 
-	if (arguments == nullptr)
-		return -2;
-
-	parse_arguments(num_options, arguments);
+	if (num_options > 1)
+		parse_arguments(num_options, arguments);
 	return load_config_file();
 }
