@@ -9,18 +9,25 @@
 #ifndef CONFIG_HPP
 #define CONFIG_HPP
 
+#include <string>
+#include <string_view>
+#include <rapidjson/document.h>
+
 class config
 {
-	const std::string_view config_cmd_option = "-c";
-	const std::string_view config_default_name = "config.json";
+	const std::string_view CMD_OPTION = "-c";
+	const std::string_view CMD_DEFAULT = "config.json";
 
 	rapidjson::Document config_file;
 	std::string config_file_location;
 
+	// Search for CMD_OPTION inside arguments. Called fromm parse_config_file
 	void parse_arguments(int num_options, char *options[]);
+
+	// If CMD_OPTION found in parse_arguments attempt to load json file using rapidjson
 	int load_config_file(void);
 public:
-	config() : config_file_location(config_default_name) {}
+	config() : config_file_location(CMD_DEFAULT) {}
 
 	static config& get_config(void)
 	{

@@ -38,15 +38,15 @@ void config::parse_arguments(int num_options, char* options[])
 	}
 
 	// Search for config option -c <file location>
-	std::string::size_type sz = config_cmd_option.size();
+	std::string::size_type sz = CMD_OPTION.size();
 	for (auto& opt : _options)
 	{
 		LOG(INFO) << "opt.compare = "
-			<< opt.compare(0, config_cmd_option.size(), config_cmd_option)
+			<< opt.compare(0, CMD_OPTION.size(), CMD_OPTION)
 			<< " \n";
 
 		if ((!opt.empty()) && (opt.size() > sz) &&
-				(opt.compare(0, sz, config_cmd_option) == 0))
+				(opt.compare(0, sz, CMD_OPTION) == 0))
 		{
 			LOG(INFO) << "Found config option: " << opt << "\n";
 			config_file_location = opt.substr(sz+1);
@@ -96,9 +96,14 @@ int config::load_config_file(void)
 	return 1;
 }
 
-int parse_config_file(int num_options, char **arguments)
+int config::parse_config_file(int num_options, char **arguments)
 {
-	// Call parse_arguments
-	// Call load_config_file
-	return 1;
+	if (num_options < 1)
+		return -1;
+
+	if (arguments == nullptr)
+		return -2;
+
+	parse_arguments(num_options, arguments);
+	return load_config_file();
 }
