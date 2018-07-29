@@ -9,21 +9,26 @@
 # NOTE: Modify here to the path to the built root folder of:
 # [s2client-api](https://github.com/Blizzard/s2client-api)
 cd ~/Documents/ML_SC2/s2client-api
+git submodule update --recursive --init
+mkdir build
+cd build
+cmake .. || exit 1
+make -j8 || exit 2
+cd ..
 
 # Install SC2 API headers
-sudo mkdir -p /opt/local/include
-sudo cp -R include/sc2api /opt/local/include
-sudo cp -R include/sc2utils /opt/local/include
-sudo cp -R build/generated/s2clientprotocol /opt/local/include
+cp -R include/sc2api ~/.local/include
+cp -R include/sc2utils ~/.local/include
+cp -R build/generated/s2clientprotocol ~/.local/include
 
 # Install protobuf headers
-sudo cp -R contrib/protobuf/src/google /opt/local/include/sc2api
+cp -R contrib/protobuf/src/google ~/.local/include/sc2api
 
 # Install SC2 API libraries
-sudo mkdir -p /opt/local/lib/sc2api
-sudo cp build/bin/libcivetweb.a /opt/local/lib/sc2api
-sudo cp build/bin/libprotobuf.a /opt/local/lib/sc2api
-sudo cp build/bin/libsc2api.a /opt/local/lib/sc2api
-sudo cp build/bin/libsc2lib.a /opt/local/lib/sc2api
-sudo cp build/bin/libsc2protocol.a /opt/local/lib/sc2api
-sudo cp build/bin/libsc2utils.a /opt/local/lib/sc2api
+mkdir -p ~/.local/lib/sc2api
+cp build/bin/libcivetweb.a ~/.local/lib/sc2api
+cp build/bin/libprotobuf.a ~/.local/lib/sc2api
+cp build/bin/libsc2api.a ~/.local/lib/sc2api
+cp build/bin/libsc2lib.a ~/.local/lib/sc2api
+cp build/bin/libsc2protocol.a ~/.local/lib/sc2api
+cp build/bin/libsc2utils.a ~/.local/lib/sc2api
