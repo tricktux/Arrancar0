@@ -16,6 +16,9 @@ titlepage-rule-height: 1
 
 # TODO
 
+## Thu Aug 02 2018 05:17 
+- Use a schema validator for the json config. See [here](http://rapidjson.org/md_doc_schema.html)
+
 ## Fri Jun 01 2018 03:26 
 - [ ] Support renderer (Optional through Configuration).
 - [ ] Support recording of replays (Optional through Configuration).
