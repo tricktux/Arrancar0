@@ -26,6 +26,8 @@ class config
 
 	// If CMD_OPTION found in parse_arguments attempt to load json file using rapidjson
 	int load_config_file(void);
+
+	int is_there_object_with_member(const char *object, const char *member);
 public:
 	config() : config_file_location(CMD_DEFAULT) {}
 

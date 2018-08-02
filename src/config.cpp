@@ -107,7 +107,7 @@ int config::parse_config_file(int num_options, const char **arguments)
 	return load_config_file();
 }
 
-int config::get_value(const char *object, const char *member, std::string &value)
+int config::is_there_object_with_member(const char *object, const char *member)
 {
 	if ((object == nullptr) || (object[0] == 0))
 	{
@@ -128,29 +128,35 @@ int config::get_value(const char *object, const char *member, std::string &value
 		return -3;
 	}
 
-	const rapidjson::Value& val = config_file[object];
-
-	if (val.IsObject() == false)
+	if (config_file[object].IsObject() == false)
 	{
 		LOG(ERROR) << "[config::get_value]: '" << object << "'"
 			"is not a rapidjson::Object";
 		return -4;
 	}
 
-	if (val.HasMember(member) == false)
+	if (config_file[object].HasMember(member) == false)
 	{
 		LOG(ERROR) << "[config::get_value]: Object '" << object << "' "
 			<< "doesn't have member '" << member << "'";
 		return -5;
 	}
 
-	if (val[member].IsString() == false)
+	return 1;
+}
+
+int config::get_value(const char *object, const char *member, std::string &value)
+{
+	if (is_there_object_with_member(object, member) < 1)
+		return -1;
+
+	if (config_file[object][member].IsString() == false)
 	{
 		LOG(ERROR) << "[config::get_value]: member '" << member <<
 			"' is not a string";
 		return -6;
 	}
 
-	value = val[member].GetString();
+	value = config_file[object][member].GetString();
 	return 1;
 }
