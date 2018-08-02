@@ -39,6 +39,8 @@ public:
 	void operator=(config const&) = delete;
 
 	int parse_config_file(int num_options, const char **arguments);
+
+	int get_value(const char *object, const char *member, std::string &value);
 };
 
 #endif
