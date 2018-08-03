@@ -27,6 +27,7 @@ class config
 	// If CMD_OPTION found in parse_arguments attempt to load json file using rapidjson
 	int load_config_file(void);
 
+	// Helping function used by get_value functions
 	int is_there_object_with_member(const char *object, const char *member);
 public:
 	config() : config_file_location(CMD_DEFAULT) {}
@@ -43,6 +44,9 @@ public:
 	int parse_config_file(int num_options, const char **arguments);
 
 	int get_value(const char *object, const char *member, std::string &value);
+	int get_value(const char *object, const char *member, double &value);
+	int get_value(const char *object, const char *member, int &value);
+	int get_value(const char *object, const char *member, bool &value);
 };
 
 #endif

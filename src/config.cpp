@@ -154,9 +154,57 @@ int config::get_value(const char *object, const char *member, std::string &value
 	{
 		LOG(ERROR) << "[config::get_value]: member '" << member <<
 			"' is not a string";
-		return -6;
+		return -2;
 	}
 
 	value = config_file[object][member].GetString();
+	return 1;
+}
+
+int config::get_value(const char *object, const char *member, double &value)
+{
+	if (is_there_object_with_member(object, member) < 1)
+		return -1;
+
+	if (config_file[object][member].IsDouble() == false)
+	{
+		LOG(ERROR) << "[config::get_value]: member '" << member <<
+			"' is not a string";
+		return -2;
+	}
+
+	value = config_file[object][member].GetDouble();
+	return 1;
+}
+
+int config::get_value(const char *object, const char *member, int &value)
+{
+	if (is_there_object_with_member(object, member) < 1)
+		return -1;
+
+	if (config_file[object][member].IsInt() == false)
+	{
+		LOG(ERROR) << "[config::get_value]: member '" << member <<
+			"' is not a string";
+		return -2;
+	}
+
+	value = config_file[object][member].GetInt();
+	return 1;
+}
+
+int config::get_value(const char *object, const char *member, bool &value)
+{
+	if (is_there_object_with_member(object, member) < 1)
+		return -1;
+
+	if (config_file[object][member].IsBool() == false)
+	{
+		LOG(ERROR) << "[config::get_value]: member '" << member <<
+			"' is not a string";
+		return -2;
+	}
+
+	value = config_file[object][member].GetBool();
 	return 1;
 }
