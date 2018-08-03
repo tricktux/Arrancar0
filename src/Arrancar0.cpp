@@ -28,9 +28,9 @@ public:
 
     virtual void OnStep() final
 	{
-		LOG(INFO) << "Game Loop = " << Observation()->GetGameLoop() << "\n";
-		LOG(INFO) << "Minerals = " << Observation()->GetMinerals() << "\n";
-		LOG(INFO) << "Vespene Gas = " << Observation()->GetVespene() << "\n";
+		LOG(INFO) << "Game Loop = " << Observation()->GetGameLoop();
+		LOG(INFO) << "Minerals = " << Observation()->GetMinerals();
+		LOG(INFO) << "Vespene Gas = " << Observation()->GetVespene();
     }
 };
 
@@ -41,10 +41,9 @@ int main(int argc, const char* argv[]) {
 	config &cfg = config::get_config();
 
 	cfg.parse_config_file(argc, argv);
-	// if (cfg.load_config_file() < 1)
-		// sc2_coordinator.LoadSettings(argc, argv);
 
-	sc2::Coordinator &sc2_coordinator = coordinator::get_coordinator();
+	coordinator &sc2_coordinator = coordinator::get_coordinator();
+	sc2_coordinator.load_configurations(argc, argv);
 
     Bot bot;
     sc2_coordinator.SetParticipants({
