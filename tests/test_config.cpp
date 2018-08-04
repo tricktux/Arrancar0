@@ -16,7 +16,19 @@ TEST(Config, DefaultConfigFile) {
 
 	int ret = cfg.parse_config_file(1, cmd_opts);
 
-	EXPECT_EQ(1,ret);
+	ASSERT_EQ(ret,1);
+
+	std::string s;
+
+	EXPECT_NE(cfg.get_value("render", "on", s), 1);
+	EXPECT_NE(cfg.get_value("replay", "on", s), 1);
+
+	EXPECT_EQ(cfg.get_value("replay", "name", s), 1);
+	LOG(INFO) << "s = '" << s << "'";
+	EXPECT_EQ(cfg.get_value("extra_cmd_line_arguments", "map", s), 1);
+	LOG(INFO) << "s = '" << s << "'";
+	EXPECT_EQ(cfg.get_value("extra_cmd_line_arguments", "executable_path", s), 1);
+	LOG(INFO) << "s = '" << s << "'";
 }
 
 int main(int argc, char *argv[])

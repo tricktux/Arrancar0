@@ -106,3 +106,105 @@ int config::parse_config_file(int num_options, const char **arguments)
 		parse_arguments(num_options, arguments);
 	return load_config_file();
 }
+
+int config::is_there_object_with_member(const char *object, const char *member)
+{
+	if ((object == nullptr) || (object[0] == 0))
+	{
+		LOG(ERROR) << "[config::get_value]: Bad function input: 'object'";
+		return -1;
+	}
+
+	if ((member == nullptr) || (member[0] == 0))
+	{
+		LOG(ERROR) << "[config::get_value]: Bad function input: 'member'";
+		return -2;
+	}
+
+	if (config_file.HasMember(object) == false)
+	{
+		LOG(ERROR) << "[config::get_value]: There is no configuration: '"
+			<< object << "'";
+		return -3;
+	}
+
+	if (config_file[object].IsObject() == false)
+	{
+		LOG(ERROR) << "[config::get_value]: '" << object << "'"
+			"is not a rapidjson::Object";
+		return -4;
+	}
+
+	if (config_file[object].HasMember(member) == false)
+	{
+		LOG(ERROR) << "[config::get_value]: Object '" << object << "' "
+			<< "doesn't have member '" << member << "'";
+		return -5;
+	}
+
+	return 1;
+}
+
+int config::get_value(const char *object, const char *member, std::string &value)
+{
+	if (is_there_object_with_member(object, member) < 1)
+		return -1;
+
+	if (config_file[object][member].IsString() == false)
+	{
+		LOG(ERROR) << "[config::get_value]: member '" << member <<
+			"' is not a string";
+		return -2;
+	}
+
+	value = config_file[object][member].GetString();
+	return 1;
+}
+
+int config::get_value(const char *object, const char *member, double &value)
+{
+	if (is_there_object_with_member(object, member) < 1)
+		return -1;
+
+	if (config_file[object][member].IsDouble() == false)
+	{
+		LOG(ERROR) << "[config::get_value]: member '" << member <<
+			"' is not a string";
+		return -2;
+	}
+
+	value = config_file[object][member].GetDouble();
+	return 1;
+}
+
+int config::get_value(const char *object, const char *member, int &value)
+{
+	if (is_there_object_with_member(object, member) < 1)
+		return -1;
+
+	if (config_file[object][member].IsInt() == false)
+	{
+		LOG(ERROR) << "[config::get_value]: member '" << member <<
+			"' is not a string";
+		return -2;
+	}
+
+	value = config_file[object][member].GetInt();
+	return 1;
+}
+
+int config::get_value(const char *object, const char *member, bool &value)
+{
+	if (is_there_object_with_member(object, member) < 1)
+		return -1;
+
+	if (config_file[object][member].IsBool() == false)
+	{
+		LOG(ERROR) << "[config::get_value]: member '" << member <<
+			"' is not a string";
+		return -2;
+	}
+
+	value = config_file[object][member].GetBool();
+	return 1;
+}
