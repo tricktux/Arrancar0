@@ -5,15 +5,15 @@
 // Created:        Fri Jun 01 2018 03:58
 // Last Modified:  Fri Jun 01 2018 03:58
 
+#include <rapidjson/document.h>
+#include <sc2api/sc2_api.h>
+#include <glog/logging.h>
+
 #include <iostream>
 #include <string>
 #include <string_view>
 #include <vector>
 #include <map>
-
-#include <rapidjson/document.h>
-#include <sc2api/sc2_api.h>
-#include <glog/logging.h>
 
 #include "config.hpp"
 #include "coordinator.hpp"
@@ -32,8 +32,7 @@ int main(int argc, const char* argv[]) {
     // Bot bot;
     sc2_coordinator.SetMyParticipants();
 
-    sc2_coordinator.LaunchStarcraft();
-    sc2_coordinator.StartGame(sc2::kMapBelShirVestigeLE);
+	sc2_coordinator.LaunchGame();
 
     while (sc2_coordinator.Update()) {}
 

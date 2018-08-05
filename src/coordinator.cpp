@@ -38,18 +38,14 @@ void Coordinator::LoadMyConfiguration(int argc, const char** argv) {
 	std::string buff;
 	// Overwrite settings if they were passed through the cli
 	char **argv_buff = const_cast<char **>(argv); // Remove const from argv
+	const Config &cfg = Config::GetConfig();
 
-	// Sun Aug 05 2018 10:37: No use for this right now. It has no effect.
-	// const config &cfg = config::get_config();
-	// for (int k=StringOptions::MAP; k<=StringOptions::EXECUTABLE_PATH; k++)
-	// {
-		// cfg.get_value(CONFIG_OBJECT, CONFIG_STRING_MEMBERS[k], StrOpts[k]);
-		// buff = CONFIG_STRING_MEMBERS[k] + std::string(" ") + StrOpts[k];
-		// LOG(INFO) << "[coordinator::LoadMyConfiguration]: Adding Command Line: '"
-			// << buff << "'";
-		// AddCommandLine(CONFIG_STRING_MEMBERS[k]);
-		// AddCommandLine(StrOpts[k]);
-	// }
+	for (int k=0; k < StringOptions::MAX; k++) {
+		cfg.GetValue(CONFIG_OBJECT, CONFIG_STRING_MEMBERS[k], StrOpts[k]);
+		buff = CONFIG_STRING_MEMBERS[k] + std::string(" ") + StrOpts[k];
+		LOG(INFO) << "[coordinator::LoadMyConfiguration]: Got: '"
+			<< buff << "'";
+	}
 
 	if (LoadSettings(argc, argv_buff) == false) {
 		LOG(WARNING) << "[Coordinator::LoadMyConfiguration]: Failed to LoadSettings";
@@ -63,7 +59,6 @@ void Coordinator::LoadMyConfiguration(int argc, const char** argv) {
 }
 
 void Coordinator::SetMyParticipants(void) {
-
 	int k = StringOptions::YOUR_RACE;
 	sc2::Race buff = sc2::Race::Terran;
 	std::vector<sc2::PlayerSetup> player_setup;
@@ -103,4 +98,15 @@ void Coordinator::SetMyParticipants(void) {
 	// TODO-[RM]-(Sat Aug 04 2018 23:58): Pass this on
 	// sc2::CreateParticipant(sc2::Race::Terran, &bot),
     SetParticipants(player_setup);
+}
+
+bool Coordinator::LaunchGame() {
+	// Get map
+	if (StrOpts[StringOptions::MAP].empty() == true) {
+		LOG(ERROR) << "[Coordinator::LaunchGame]: Map options was not provided";
+		return false;
+	}
+
+	LaunchStarcraft();
+	return StartGame(StrOpts[StringOptions::MAP]);
 }

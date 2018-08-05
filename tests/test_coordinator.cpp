@@ -28,11 +28,9 @@ TEST(Coordinator, LoadingRaces) {
 
     sc2_coordinator.SetMyParticipants();
 
-	sc2_coordinator.LaunchStarcraft();
-	sc2_coordinator.StartGame(sc2::kMapBelShirVestigeLE);
+	ASSERT_EQ(sc2_coordinator.LaunchGame(), true);
 
-	while (sc2_coordinator.Update()) {
-	}
+	while (sc2_coordinator.Update()) { }
 }
 
 int main(int argc, const char *argv[])

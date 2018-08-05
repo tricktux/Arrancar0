@@ -12,10 +12,8 @@
 #include <map>
 #include <sc2api/sc2_api.h>
 
-class Coordinator : public sc2::Coordinator
-{
-	enum StringOptions
-	{
+class Coordinator : public sc2::Coordinator {
+	enum StringOptions {
 		MAP = 0,
 		YOUR_RACE,
 		OPPONENT_RACE,
@@ -28,15 +26,14 @@ class Coordinator : public sc2::Coordinator
 
 	std::string StrOpts[StringOptions::MAX];
 
-	Coordinator() : sc2::Coordinator() 
-	{
+	Coordinator() : sc2::Coordinator() {
 		for (int k=0; k<StringOptions::MAX; k++)
 			StrOpts[k] = std::string();
 	}
+
 public:
 
-	static Coordinator& GetCoordinator(void)
-	{
+	static Coordinator& GetCoordinator(void) {
 		static Coordinator rc;
 		return rc;
 	}
@@ -46,6 +43,8 @@ public:
 
 	void LoadMyConfiguration(int argc, const char** argv);
 	void SetMyParticipants();
+
+	bool LaunchGame();
 };
 
 #endif
