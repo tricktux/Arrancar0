@@ -1,8 +1,14 @@
 {
-	"extra_cmd_line_arguments": 
+	"coordinator": 
 	{
+		"_comment" : "map option",
 		"map" : "NeonVioletSquareLE.SC2Map",
-		"executable_path" : "~/Documents/ML_SC2/StarCraftII/Versions/Base59877/SC2_x64"
+		"_comment" : "path to StarCraftII executable",
+		"-e" : "This is not used anymore. You have to pass it via cli.",
+		"_comment" : "can be Zerg, Protoss, Terran, Random. Default if not specified: Random",
+		"opponent_race" : "Zerg",
+		"_comment" : "your bot's race",
+		"your_race" : "Terran"
 	},
 	"render" :
 	{
