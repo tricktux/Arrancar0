@@ -6,11 +6,17 @@
 // Created:        Thu Aug 02 2018 20:15
 // Last Modified:  Thu Aug 02 2018 20:15
 
+#include "coordinator.hpp"
+
 #include <glog/logging.h>
 
+#include <map>
+#include <string>
+#include <vector>
+
 #include "config.hpp"
-#include "coordinator.hpp"
 #include "super_bot.hpp"
+
 
 const char *Coordinator::CONFIG_STRING_MEMBERS[] = {
 	"map",
@@ -33,7 +39,7 @@ void Coordinator::LoadMyConfiguration(int argc, const char** argv) {
 	// Overwrite settings if they were passed through the cli
 	char **argv_buff = const_cast<char **>(argv); // Remove const from argv
 
-	// Sun Aug 05 2018 10:37: No use for this right now. It has no effect. 
+	// Sun Aug 05 2018 10:37: No use for this right now. It has no effect.
 	// const config &cfg = config::get_config();
 	// for (int k=StringOptions::MAP; k<=StringOptions::EXECUTABLE_PATH; k++)
 	// {
@@ -45,12 +51,11 @@ void Coordinator::LoadMyConfiguration(int argc, const char** argv) {
 		// AddCommandLine(StrOpts[k]);
 	// }
 
-	if (LoadSettings(argc, argv_buff) == false)
-	{
+	if (LoadSettings(argc, argv_buff) == false) {
 		LOG(WARNING) << "[Coordinator::LoadMyConfiguration]: Failed to LoadSettings";
 		LOG(INFO) << "[Coordinator::LoadMyConfiguration]: argc = " << argc;
-		for (int k=0; k < argc; k++)
-		{
+
+		for (int k=0; k < argc; k++) {
 			LOG(INFO) << "[Coordinator::LoadMyConfiguration]: argv[" << k << "] = "
 				<< argv[k];
 		}
@@ -73,9 +78,10 @@ void Coordinator::SetMyParticipants(void) {
 		LOG(INFO) << "[Coordinator::SetMyParticipants]: Detected race: '"
 			<< StrOpts[k] << "'";
 		buff = search->second;
-	}
-	else
+	} else {
 		LOG(WARNING) << "[Coordinator::SetMyParticipants]: Your race wasnt detected";
+	}
+
 	player_setup.emplace_back(sc2::CreateParticipant(buff, &bot));
 
 	// Decode opponent race
@@ -89,9 +95,9 @@ void Coordinator::SetMyParticipants(void) {
 		LOG(INFO) << "[Coordinator::SetMyParticipants]: Detected race: '"
 			<< StrOpts[k] << "'";
 		buff = search->second;
-	}
-	else
+	} else {
 		LOG(WARNING) << "[Coordinator::SetMyParticipants]: Your race wasnt detected";
+	}
 	player_setup.emplace_back(sc2::CreateComputer(buff));
 
 	// TODO-[RM]-(Sat Aug 04 2018 23:58): Pass this on

@@ -2,6 +2,7 @@
 #define SUPER_BOT_HPP
 
 #include <sc2api/sc2_api.h>
+#include <glog/logging.h>
 
 // - Also make it singleton
 class SuperBot : public sc2::Agent {
@@ -21,8 +22,7 @@ public:
 
 	virtual void OnGameStart() final { LOG(INFO) << "Hello Word!!\n"; }
 
-	virtual void OnStep() final
-	{
+	virtual void OnStep() final {
 		LOG(INFO) << "Game Loop = " << Observation()->GetGameLoop();
 		LOG(INFO) << "Minerals = " << Observation()->GetMinerals();
 		LOG(INFO) << "Vespene Gas = " << Observation()->GetVespene();
