@@ -4,11 +4,12 @@ include_directories(SYSTEM
 		"${RAPIDJSON_INCLUDE_DIRS}"
 		"${GLOG_INCLUDE_DIRS}"
 		"${GTEST_INCLUDE_DIRS}"
+		"${SC2Api_INCLUDE_DIRS}"
 	)
 
 # Copy test configuration file to output
 file(
-		COPY config/
+		COPY ${CMAKE_SOURCE_DIR}/config/
 		DESTINATION ${EXECUTABLE_OUTPUT_PATH}
 		FILES_MATCHING PATTERN "*.json"
 	)
@@ -23,3 +24,21 @@ target_link_libraries(test_config
 	)
 
 add_test(test_config ${EXECUTABLE_OUTPUT_PATH})
+
+add_executable(
+		test_coordinator 
+		test_coordinator.cpp 
+		${CMAKE_SOURCE_DIR}/src/config.cpp
+		${CMAKE_SOURCE_DIR}/src/coordinator.cpp
+	)
+
+# Link test executable against gtest & gtest_main
+target_link_libraries(test_coordinator
+		${GTEST_BOTH_LIBRARIES}
+		${GLOG_LIBRARIES}
+		${SC2Api_LIBRARIES}
+		pthread
+		dl
+	)
+
+add_test(test_coordinator ${EXECUTABLE_OUTPUT_PATH})
