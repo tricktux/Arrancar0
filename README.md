@@ -1,6 +1,9 @@
 # Arrancar0
 Starcraft II Artificial Intelligence Bot
 
+## API Documentation!!
+- [Here](https://blizzard.github.io/s2client-api/)
+
 ## Dependencies:
 - [Blizzard's s2client-api](https://github.com/Blizzard/s2client-api)
 - [glog](https://github.com/google/glog)
