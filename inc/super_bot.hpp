@@ -20,7 +20,13 @@ public:
 	SuperBot(SuperBot const&) = delete;
 	void operator= (SuperBot const&) = delete;
 
-	virtual void OnGameStart() final { LOG(INFO) << "Hello Word!!\n"; }
+    virtual void OnGameStart() final {
+        sc2::renderer::Initialize("Rendered", 50, 50, kMiniMapX + kMapX, std::max(kMiniMapY, kMapY));
+    }
+
+	virtual void OnGameEnd() final {
+		sc2::renderer::Shutdown();
+	}
 
 	virtual void OnStep() final {
 		LOG(INFO) << "Game Loop = " << Observation()->GetGameLoop();
