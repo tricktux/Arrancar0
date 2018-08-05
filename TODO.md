@@ -4,15 +4,8 @@ subtitle:   Document future work
 author:		Reinaldo Molina
 email:      rmolin88 at gmail dot com
 date:       Fri Jun 01 2018 03:26
-titlepage: true
-titlepage-color: 06386e
-titlepage-text-color: ffffff
-titlepage-rule-color: ffffff
-titlepage-rule-height: 1
 ---
 
-\tableofcontents
-\pagebreak
 
 # TODO
 
