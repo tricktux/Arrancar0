@@ -10,28 +10,25 @@
 
 #include "config.hpp"
 #include "coordinator.hpp"
+#include "super_bot.hpp"
 
-const char *coordinator::CONFIG_STRING_MEMBERS[] =
-{
-	"-m",
-	"-e",
+const char *Coordinator::CONFIG_STRING_MEMBERS[] = {
+	"map",
 	"your_race",
 	"opponent_race"
 };
-const int coordinator::CONFIG_STRING_MEMBERS_NUM =
-	sizeof(coordinator::CONFIG_STRING_MEMBERS)/sizeof(char *);
+const int Coordinator::CONFIG_STRING_MEMBERS_NUM =
+	sizeof(Coordinator::CONFIG_STRING_MEMBERS)/sizeof(char *);
 
 
-const std::map<std::string, sc2::Race> coordinator::CONFIG_RACE_MAP =
-{
+const std::map<std::string, sc2::Race> Coordinator::CONFIG_RACE_MAP = {
 	{"Terran", sc2::Race::Terran},
 	{"Zerg", sc2::Race::Zerg},
 	{"Protoss", sc2::Race::Protoss},
 	{"Random", sc2::Race::Random}
 };
 
-void coordinator::load_configurations(int argc, const char** argv)
-{
+void Coordinator::LoadMyConfiguration(int argc, const char** argv) {
 	std::string buff;
 	// Overwrite settings if they were passed through the cli
 	char **argv_buff = const_cast<char **>(argv); // Remove const from argv
@@ -40,56 +37,62 @@ void coordinator::load_configurations(int argc, const char** argv)
 	// const config &cfg = config::get_config();
 	// for (int k=StringOptions::MAP; k<=StringOptions::EXECUTABLE_PATH; k++)
 	// {
-		// cfg.get_value(CONFIG_OBJECT, CONFIG_STRING_MEMBERS[k], str_options[k]);
-		// buff = CONFIG_STRING_MEMBERS[k] + std::string(" ") + str_options[k];
-		// LOG(INFO) << "[coordinator::load_configurations]: Adding Command Line: '"
+		// cfg.get_value(CONFIG_OBJECT, CONFIG_STRING_MEMBERS[k], StrOpts[k]);
+		// buff = CONFIG_STRING_MEMBERS[k] + std::string(" ") + StrOpts[k];
+		// LOG(INFO) << "[coordinator::LoadMyConfiguration]: Adding Command Line: '"
 			// << buff << "'";
 		// AddCommandLine(CONFIG_STRING_MEMBERS[k]);
-		// AddCommandLine(str_options[k]);
+		// AddCommandLine(StrOpts[k]);
 	// }
 
 	if (LoadSettings(argc, argv_buff) == false)
 	{
-		LOG(WARNING) << "[coordinator::load_configurations]: Failed to LoadSettings";
-		LOG(INFO) << "[coordinator::load_configurations]: argc = " << argc;
+		LOG(WARNING) << "[Coordinator::LoadMyConfiguration]: Failed to LoadSettings";
+		LOG(INFO) << "[Coordinator::LoadMyConfiguration]: argc = " << argc;
 		for (int k=0; k < argc; k++)
 		{
-			LOG(INFO) << "[coordinator::load_configurations]: argv[" << k << "] = "
+			LOG(INFO) << "[Coordinator::LoadMyConfiguration]: argv[" << k << "] = "
 				<< argv[k];
 		}
 	}
 }
 
-void coordinator::set_participants(void)
-{
-	sc2::Race buff;
+void Coordinator::SetMyParticipants(void) {
+
+	int k = StringOptions::YOUR_RACE;
+	sc2::Race buff = sc2::Race::Terran;
 	std::vector<sc2::PlayerSetup> player_setup;
+	SuperBot& bot = SuperBot::GetSuperBot();
 
 	// Set a default option for the opponent race.
-	if (str_options[StringOptions::OPPONENT_RACE].empty() == true)
-		str_options[StringOptions::OPPONENT_RACE] = "Random";
-	if (str_options[StringOptions::YOUR_RACE].empty() == true)
-		str_options[StringOptions::YOUR_RACE] = "Terran";
+	if (StrOpts[k].empty() == true)
+		StrOpts[k] = "Terran";
+	auto search = CONFIG_RACE_MAP.find(StrOpts[k]);
+
+	if (search != CONFIG_RACE_MAP.end()) {
+		LOG(INFO) << "[Coordinator::SetMyParticipants]: Detected race: '"
+			<< StrOpts[k] << "'";
+		buff = search->second;
+	}
+	else
+		LOG(WARNING) << "[Coordinator::SetMyParticipants]: Your race wasnt detected";
+	player_setup.emplace_back(sc2::CreateParticipant(buff, &bot));
 
 	// Decode opponent race
-	for (int k=StringOptions::YOUR_RACE; k<=StringOptions::OPPONENT_RACE; k++)
-	{
-		auto search = CONFIG_RACE_MAP.find(str_options[k]);
-		if (search != CONFIG_RACE_MAP.end())
-		{
-			LOG(INFO) << "[coordinator::set_participants]: Detected race: '"
-				<< str_options[k] << "'";
-			buff = search->second;
-		}
-		else
-		{
-			LOG(WARNING) << "[coordinator::set_participants]: Failed to decode race: '"
-				<< str_options[k] << "'";
-			buff = sc2::Race::Random;
-		}
+	k = StringOptions::OPPONENT_RACE;
+	buff = sc2::Race::Random;
+	if (StrOpts[k].empty() == true)
+		StrOpts[k] = "Random";
+	search = CONFIG_RACE_MAP.find(StrOpts[k]);
 
-		player_setup.emplace_back(sc2::CreateComputer(buff));
+	if (search != CONFIG_RACE_MAP.end()) {
+		LOG(INFO) << "[Coordinator::SetMyParticipants]: Detected race: '"
+			<< StrOpts[k] << "'";
+		buff = search->second;
 	}
+	else
+		LOG(WARNING) << "[Coordinator::SetMyParticipants]: Your race wasnt detected";
+	player_setup.emplace_back(sc2::CreateComputer(buff));
 
 	// TODO-[RM]-(Sat Aug 04 2018 23:58): Pass this on
 	// sc2::CreateParticipant(sc2::Race::Terran, &bot),

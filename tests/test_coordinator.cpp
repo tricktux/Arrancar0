@@ -17,16 +17,16 @@ TEST(Coordinator, LoadingRaces) {
 		// "/home/reinaldo/Documents/ML_SC2/StarCraftII/Versions/Base60321/SC2_x64"
 	};
 
-	config &cfg = config::get_config();
+	Config &cfg = Config::GetConfig();
 
-	int ret = cfg.parse_config_file(argc, cmd_opts);
+	int ret = cfg.ParseConfigFile(argc, cmd_opts);
 
 	ASSERT_EQ(ret,1);
 
-	coordinator &sc2_coordinator = coordinator::get_coordinator();
-	sc2_coordinator.load_configurations(argc, cmd_opts);
+	Coordinator &sc2_coordinator = Coordinator::GetCoordinator();
+	sc2_coordinator.LoadMyConfiguration(argc, cmd_opts);
 
-    sc2_coordinator.set_participants();
+    sc2_coordinator.SetMyParticipants();
 
 	sc2_coordinator.LaunchStarcraft();
 	sc2_coordinator.StartGame(sc2::kMapBelShirVestigeLE);

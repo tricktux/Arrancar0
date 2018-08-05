@@ -9,11 +9,10 @@
 #ifndef COORDINATOR_HPP
 #define COORDINATOR_HPP
 
-#include <string_view>
 #include <map>
 #include <sc2api/sc2_api.h>
 
-class coordinator : public sc2::Coordinator
+class Coordinator : public sc2::Coordinator
 {
 	enum StringOptions
 	{
@@ -23,31 +22,30 @@ class coordinator : public sc2::Coordinator
 		MAX
 	};
 	char const *CONFIG_OBJECT = "coordinator";
-
+	static const std::map<std::string, sc2::Race> CONFIG_RACE_MAP;
 	static const char *CONFIG_STRING_MEMBERS[];
 	static const int CONFIG_STRING_MEMBERS_NUM;
 
-	std::string str_options[StringOptions::MAX];
-	static const std::map<std::string, sc2::Race> CONFIG_RACE_MAP;
+	std::string StrOpts[StringOptions::MAX];
 
-	coordinator() : sc2::Coordinator() 
+	Coordinator() : sc2::Coordinator() 
 	{
 		for (int k=0; k<StringOptions::MAX; k++)
-			str_options[k] = std::string();
+			StrOpts[k] = std::string();
 	}
 public:
 
-	static coordinator& get_coordinator(void)
+	static Coordinator& GetCoordinator(void)
 	{
-		static coordinator rc;
+		static Coordinator rc;
 		return rc;
 	}
 
-	coordinator(coordinator const&) = delete;
-	void operator= (coordinator const&) = delete;
+	Coordinator(Coordinator const&) = delete;
+	void operator= (Coordinator const&) = delete;
 
-	void load_configurations(int argc, const char** argv);
-	void set_participants();
+	void LoadMyConfiguration(int argc, const char** argv);
+	void SetMyParticipants();
 };
 
 #endif

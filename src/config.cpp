@@ -20,7 +20,7 @@
 
 #include "config.hpp"
 
-void config::parse_arguments(int num_options, const char* options[])
+void Config::ParseArguments(int num_options, const char* options[])
 {
 	if (num_options < 1)
 		return;
@@ -49,39 +49,39 @@ void config::parse_arguments(int num_options, const char* options[])
 				(opt.compare(0, sz, CMD_OPTION) == 0))
 		{
 			LOG(INFO) << "Found config option: " << opt << "\n";
-			config_file_location = opt.substr(sz+1);
+			FileLocation = opt.substr(sz+1);
 			break;
 		}
 	}
 
-	if (config_file_location.empty())
+	if (FileLocation.empty())
 		LOG(WARNING) << "Configuration option (-c) not provided, using default\n";
 }
 
-int config::load_config_file(void)
+int Config::LoadConfigFile(void)
 {
-	if (config_file_location.empty())
+	if (FileLocation.empty())
 		return -1;
 
 	std::ostringstream file_content;
 
 	{
-		std::ifstream ifs(config_file_location);
+		std::ifstream ifs(FileLocation);
 
 		if (ifs.is_open() == false)
 		{
 			LOG(ERROR) << "Failed to open file: "
-				<< config_file_location
+				<< FileLocation
 				<< '\n';
 			return -2;
 		}
 
-		LOG(INFO) << "config_file_location = " <<  config_file_location.c_str() << '\n';
+		LOG(INFO) << "FileLocation = " <<  FileLocation.c_str() << '\n';
 
 		file_content << ifs.rdbuf();
 	} // Close ifs
 
-	rapidjson::ParseResult rc = config_file.Parse(file_content.str().c_str());
+	rapidjson::ParseResult rc = File.Parse(file_content.str().c_str());
 
 	if (rc.IsError() == true)
 	{
@@ -97,47 +97,47 @@ int config::load_config_file(void)
 }
 
 // Handle the case where no command options are sent
-int config::parse_config_file(int num_options, const char **arguments)
+int Config::ParseConfigFile(int num_options, const char **arguments)
 {
 	if (num_options < 1)
 		return -1;
 
 	if (num_options > 1)
-		parse_arguments(num_options, arguments);
-	return load_config_file();
+		ParseArguments(num_options, arguments);
+	return LoadConfigFile();
 }
 
-int config::is_there_object_with_member(const char *object, const char *member) const
+int Config::IsThereObjectWithMember(const char *object, const char *member) const
 {
 	if ((object == nullptr) || (object[0] == 0))
 	{
-		LOG(ERROR) << "[config::get_value]: Bad function input: 'object'";
+		LOG(ERROR) << "[Config::GetValue]: Bad function input: 'object'";
 		return -1;
 	}
 
 	if ((member == nullptr) || (member[0] == 0))
 	{
-		LOG(ERROR) << "[config::get_value]: Bad function input: 'member'";
+		LOG(ERROR) << "[Config::GetValue]: Bad function input: 'member'";
 		return -2;
 	}
 
-	if (config_file.HasMember(object) == false)
+	if (File.HasMember(object) == false)
 	{
-		LOG(ERROR) << "[config::get_value]: There is no configuration: '"
+		LOG(ERROR) << "[Config::GetValue]: There is no configuration: '"
 			<< object << "'";
 		return -3;
 	}
 
-	if (config_file[object].IsObject() == false)
+	if (File[object].IsObject() == false)
 	{
-		LOG(ERROR) << "[config::get_value]: '" << object << "'"
+		LOG(ERROR) << "[Config::GetValue]: '" << object << "'"
 			"is not a rapidjson::Object";
 		return -4;
 	}
 
-	if (config_file[object].HasMember(member) == false)
+	if (File[object].HasMember(member) == false)
 	{
-		LOG(ERROR) << "[config::get_value]: Object '" << object << "' "
+		LOG(ERROR) << "[Config::GetValue]: Object '" << object << "' "
 			<< "doesn't have member '" << member << "'";
 		return -5;
 	}
@@ -145,66 +145,66 @@ int config::is_there_object_with_member(const char *object, const char *member) 
 	return 1;
 }
 
-int config::get_value(const char *object, const char *member, std::string &value) const
+int Config::GetValue(const char *object, const char *member, std::string &value) const
 {
-	if (is_there_object_with_member(object, member) < 1)
+	if (IsThereObjectWithMember(object, member) < 1)
 		return -1;
 
-	if (config_file[object][member].IsString() == false)
+	if (File[object][member].IsString() == false)
 	{
-		LOG(ERROR) << "[config::get_value]: member '" << member <<
+		LOG(ERROR) << "[Config::GetValue]: member '" << member <<
 			"' is not a string";
 		return -2;
 	}
 
-	value = config_file[object][member].GetString();
+	value = File[object][member].GetString();
 	return 1;
 }
 
-int config::get_value(const char *object, const char *member, double &value) const
+int Config::GetValue(const char *object, const char *member, double &value) const
 {
-	if (is_there_object_with_member(object, member) < 1)
+	if (IsThereObjectWithMember(object, member) < 1)
 		return -1;
 
-	if (config_file[object][member].IsDouble() == false)
+	if (File[object][member].IsDouble() == false)
 	{
-		LOG(ERROR) << "[config::get_value]: member '" << member <<
+		LOG(ERROR) << "[Config::GetValue]: member '" << member <<
 			"' is not a string";
 		return -2;
 	}
 
-	value = config_file[object][member].GetDouble();
+	value = File[object][member].GetDouble();
 	return 1;
 }
 
-int config::get_value(const char *object, const char *member, int &value) const
+int Config::GetValue(const char *object, const char *member, int &value) const
 {
-	if (is_there_object_with_member(object, member) < 1)
+	if (IsThereObjectWithMember(object, member) < 1)
 		return -1;
 
-	if (config_file[object][member].IsInt() == false)
+	if (File[object][member].IsInt() == false)
 	{
-		LOG(ERROR) << "[config::get_value]: member '" << member <<
+		LOG(ERROR) << "[Config::GetValue]: member '" << member <<
 			"' is not a string";
 		return -2;
 	}
 
-	value = config_file[object][member].GetInt();
+	value = File[object][member].GetInt();
 	return 1;
 }
 
-int config::get_value(const char *object, const char *member, bool &value) const
+int Config::GetValue(const char *object, const char *member, bool &value) const
 {
-	if (is_there_object_with_member(object, member) < 1)
+	if (IsThereObjectWithMember(object, member) < 1)
 		return -1;
 
-	if (config_file[object][member].IsBool() == false)
+	if (File[object][member].IsBool() == false)
 	{
-		LOG(ERROR) << "[config::get_value]: member '" << member <<
+		LOG(ERROR) << "[Config::GetValue]: member '" << member <<
 			"' is not a string";
 		return -2;
 	}
 
-	value = config_file[object][member].GetBool();
+	value = File[object][member].GetBool();
 	return 1;
 }
