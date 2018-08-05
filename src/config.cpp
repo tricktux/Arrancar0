@@ -107,7 +107,7 @@ int config::parse_config_file(int num_options, const char **arguments)
 	return load_config_file();
 }
 
-int config::is_there_object_with_member(const char *object, const char *member)
+int config::is_there_object_with_member(const char *object, const char *member) const
 {
 	if ((object == nullptr) || (object[0] == 0))
 	{
@@ -145,7 +145,7 @@ int config::is_there_object_with_member(const char *object, const char *member)
 	return 1;
 }
 
-int config::get_value(const char *object, const char *member, std::string &value)
+int config::get_value(const char *object, const char *member, std::string &value) const
 {
 	if (is_there_object_with_member(object, member) < 1)
 		return -1;
@@ -161,7 +161,7 @@ int config::get_value(const char *object, const char *member, std::string &value
 	return 1;
 }
 
-int config::get_value(const char *object, const char *member, double &value)
+int config::get_value(const char *object, const char *member, double &value) const
 {
 	if (is_there_object_with_member(object, member) < 1)
 		return -1;
@@ -177,7 +177,7 @@ int config::get_value(const char *object, const char *member, double &value)
 	return 1;
 }
 
-int config::get_value(const char *object, const char *member, int &value)
+int config::get_value(const char *object, const char *member, int &value) const
 {
 	if (is_there_object_with_member(object, member) < 1)
 		return -1;
@@ -193,7 +193,7 @@ int config::get_value(const char *object, const char *member, int &value)
 	return 1;
 }
 
-int config::get_value(const char *object, const char *member, bool &value)
+int config::get_value(const char *object, const char *member, bool &value) const
 {
 	if (is_there_object_with_member(object, member) < 1)
 		return -1;

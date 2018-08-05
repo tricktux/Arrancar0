@@ -25,9 +25,9 @@ TEST(Config, DefaultConfigFile) {
 
 	EXPECT_EQ(cfg.get_value("replay", "name", s), 1);
 	LOG(INFO) << "s = '" << s << "'";
-	EXPECT_EQ(cfg.get_value("extra_cmd_line_arguments", "map", s), 1);
+	EXPECT_EQ(cfg.get_value("coordinator", "-m", s), 1);
 	LOG(INFO) << "s = '" << s << "'";
-	EXPECT_EQ(cfg.get_value("extra_cmd_line_arguments", "executable_path", s), 1);
+	EXPECT_EQ(cfg.get_value("coordinator", "-e", s), 1);
 	LOG(INFO) << "s = '" << s << "'";
 }
 

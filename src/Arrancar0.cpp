@@ -22,6 +22,7 @@
 
 
 // TODO-[RM]-(Sun Jun 03 2018 17:07):  Move this to its own class
+// - Also make it singleton
 class Bot : public sc2::Agent {
 public:
     virtual void OnGameStart() final { LOG(INFO) << "Hello Word!!\n"; }
@@ -46,13 +47,10 @@ int main(int argc, const char* argv[]) {
 	sc2_coordinator.load_configurations(argc, argv);
 
     Bot bot;
-    sc2_coordinator.SetParticipants({
-		sc2::CreateParticipant(sc2::Race::Terran, &bot),
-        sc2::CreateComputer(sc2::Race::Zerg)
-    });
+    sc2_coordinator.set_participants();
 
     sc2_coordinator.LaunchStarcraft();
-    sc2_coordinator.StartGame();
+    sc2_coordinator.StartGame(sc2::kMapBelShirVestigeLE);
 
     while (sc2_coordinator.Update()) {}
 

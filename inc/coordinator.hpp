@@ -10,19 +10,31 @@
 #define COORDINATOR_HPP
 
 #include <string_view>
+#include <map>
 #include <sc2api/sc2_api.h>
 
 class coordinator : public sc2::Coordinator
 {
-	char const *CONFIG_OBJECT = "extra_cmd_line_arguments";
-	/// Thu Aug 02 2018 20:35 left here tryng to code the 
-	/// options that the coordinator loads in the config.json
-	// char const *MEMBERS[] = {
-		// "map",
-		// "executable_path"
-	// };
+	enum StringOptions
+	{
+		MAP = 0,
+		YOUR_RACE,
+		OPPONENT_RACE,
+		MAX
+	};
+	char const *CONFIG_OBJECT = "coordinator";
 
-	coordinator() : sc2::Coordinator() {}
+	static const char *CONFIG_STRING_MEMBERS[];
+	static const int CONFIG_STRING_MEMBERS_NUM;
+
+	std::string str_options[StringOptions::MAX];
+	static const std::map<std::string, sc2::Race> CONFIG_RACE_MAP;
+
+	coordinator() : sc2::Coordinator() 
+	{
+		for (int k=0; k<StringOptions::MAX; k++)
+			str_options[k] = std::string();
+	}
 public:
 
 	static coordinator& get_coordinator(void)
@@ -35,6 +47,7 @@ public:
 	void operator= (coordinator const&) = delete;
 
 	void load_configurations(int argc, const char** argv);
+	void set_participants();
 };
 
 #endif
