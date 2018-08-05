@@ -2,17 +2,19 @@
 #define SUPER_BOT_HPP
 
 #include <sc2api/sc2_api.h>
+#include <sc2renderer/sc2_renderer.h>
 #include <glog/logging.h>
 
-// - Also make it singleton
 class SuperBot : public sc2::Agent {
+	const int kMapX = 800;
+	const int kMapY = 600;
+	const int kMiniMapX = 300;
+	const int kMiniMapY = 300;
 
 	SuperBot() : sc2::Agent() {}
-
 public:
 
-	static SuperBot& GetSuperBot()
-	{
+	static SuperBot& GetSuperBot() {
 		static SuperBot rc;
 		return rc;
 	}
@@ -33,6 +35,8 @@ public:
 		LOG(INFO) << "Minerals = " << Observation()->GetMinerals();
 		LOG(INFO) << "Vespene Gas = " << Observation()->GetVespene();
 	}
+
+	void Render();
 };
 
 #endif
