@@ -30,6 +30,7 @@ add_executable(
 		test_coordinator.cpp 
 		${CMAKE_SOURCE_DIR}/src/config.cpp
 		${CMAKE_SOURCE_DIR}/src/coordinator.cpp
+		${CMAKE_SOURCE_DIR}/src/super_bot.cpp
 	)
 
 # Link test executable against gtest & gtest_main

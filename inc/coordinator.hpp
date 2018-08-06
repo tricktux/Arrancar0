@@ -10,6 +10,7 @@
 #define COORDINATOR_HPP
 
 #include <map>
+#include <string>
 #include <sc2api/sc2_api.h>
 
 class Coordinator : public sc2::Coordinator {

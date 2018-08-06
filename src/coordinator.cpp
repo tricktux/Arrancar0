@@ -43,7 +43,7 @@ void Coordinator::LoadMyConfiguration(int argc, const char** argv) {
 	for (int k=0; k < StringOptions::MAX; k++) {
 		cfg.GetValue(CONFIG_OBJECT, CONFIG_STRING_MEMBERS[k], StrOpts[k]);
 		buff = CONFIG_STRING_MEMBERS[k] + std::string(" ") + StrOpts[k];
-		LOG(INFO) << "[coordinator::LoadMyConfiguration]: Got: '"
+		LOG(INFO) << "[Coordinator::LoadMyConfiguration]: Got: '"
 			<< buff << "'";
 	}
 
