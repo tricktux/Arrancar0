@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <glog/logging.h>
+#include <sc2utils/sc2_manage_process.h>
 
 #include "config.hpp"
 #include "coordinator.hpp"
@@ -30,7 +31,11 @@ TEST(Coordinator, LoadingRaces) {
 
 	ASSERT_EQ(sc2_coordinator.LaunchGame(), true);
 
-	while (sc2_coordinator.Update()) { }
+    while (sc2_coordinator.Update()) {
+        if (sc2::PollKeyPress()) {
+            break;
+        }
+    }
 }
 
 int main(int argc, const char *argv[])

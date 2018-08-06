@@ -26,6 +26,7 @@ class CustomRenderer {
 	void LoadOpts(void);
 
 	CustomRenderer() {
+		// Default values
 		IntOpts[MAP_X] = 800;
 		IntOpts[MAP_Y] = 600;
 		IntOpts[MINI_MAP_X] = 300;
@@ -53,7 +54,7 @@ public:
 
 		sc2::renderer::Shutdown(); 
 	}
-	void Render();
+	void Render(const SC2APIProtocol::Observation* observation);
 };
 
 class SuperBot : public sc2::Agent {
@@ -76,7 +77,7 @@ public:
 	}
 
 	virtual void OnStep() final {
-		// renderer.Render();
+		renderer.Render(Observation()->GetRawObservation());
 		LOG(INFO) << "Game Loop = " << Observation()->GetGameLoop();
 		LOG(INFO) << "Minerals = " << Observation()->GetMinerals();
 		LOG(INFO) << "Vespene Gas = " << Observation()->GetVespene();

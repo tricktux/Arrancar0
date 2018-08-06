@@ -35,6 +35,11 @@ const std::map<std::string, sc2::Race> Coordinator::CONFIG_RACE_MAP = {
 };
 
 void Coordinator::LoadMyConfiguration(int argc, const char** argv) {
+	const int kMapX = 800;
+	const int kMapY = 600;
+	const int kMiniMapX = 300;
+	const int kMiniMapY = 300;
+
 	std::string buff;
 	// Overwrite settings if they were passed through the cli
 	char **argv_buff = const_cast<char **>(argv); // Remove const from argv
@@ -56,6 +61,10 @@ void Coordinator::LoadMyConfiguration(int argc, const char** argv) {
 				<< argv[k];
 		}
 	}
+
+	AddCommandLine("-osmesapath /usr/lib/libOSMesa.so");
+	sc2::RenderSettings settings(kMapX, kMapY, kMiniMapX, kMiniMapY);
+	SetRender(settings);
 }
 
 void Coordinator::SetMyParticipants(void) {

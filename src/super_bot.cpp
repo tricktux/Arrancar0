@@ -1,6 +1,7 @@
 
 #include "super_bot.hpp"
 
+#include <sc2api/sc2_api.h>
 #include <sc2renderer/sc2_renderer.h>
 
 #include "config.hpp"
@@ -14,20 +15,23 @@ const char *CustomRenderer::CONFIG_INT_MEMBERS[] = {
 const int CustomRenderer::CONFIG_INT_MEMBERS_NUM =
 	sizeof(CustomRenderer::CONFIG_INT_MEMBERS)/sizeof(char *);
 
-void CustomRenderer::Render() {
+void CustomRenderer::Render(const SC2APIProtocol::Observation* observation) {
 	if (On == false) return;
 
 	// TODO-Sun Aug 05 2018 20:29: Not working 
 	// const SC2APIProtocol::Observation* observation = Observation()->GetRawObservation();
-	// const SC2APIProtocol::ObservationRender& render =  observation->render_data();
+	const SC2APIProtocol::ObservationRender& render =  observation->render_data();
 
-	// const SC2APIProtocol::ImageData& minimap = render.minimap();
-	// sc2::renderer::ImageRGB(&minimap.data().data()[0], minimap.size().x(), minimap.size().y(), 0, std::max(kMiniMapY, kMapY) - kMiniMapY);
+	const SC2APIProtocol::ImageData& minimap = render.minimap();
+	sc2::renderer::ImageRGB(&minimap.data().data()[0], minimap.size().x(),
+			minimap.size().y(), 0,
+			std::max(IntOpts[MINI_MAP_Y], IntOpts[MAP_Y]) - IntOpts[MINI_MAP_Y]);
 
-	// const SC2APIProtocol::ImageData& map = render.map();
-	// sc2::renderer::ImageRGB(&map.data().data()[0], map.size().x(), map.size().y(), kMiniMapX, 0);
+	const SC2APIProtocol::ImageData& map = render.map();
+	sc2::renderer::ImageRGB(&map.data().data()[0], map.size().x(), map.size().y(),
+			IntOpts[MINI_MAP_X], 0);
 
-	// sc2::renderer::Render();
+	sc2::renderer::Render();
 }
 
 void CustomRenderer::LoadOpts(void) {
