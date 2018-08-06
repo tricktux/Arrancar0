@@ -21,7 +21,7 @@
 const char *Coordinator::CONFIG_STRING_MEMBERS[] = {
 	"map",
 	"your_race",
-	"opponent_race"
+	"opponent_race",
 };
 const int Coordinator::CONFIG_STRING_MEMBERS_NUM =
 	sizeof(Coordinator::CONFIG_STRING_MEMBERS)/sizeof(char *);
@@ -40,16 +40,16 @@ void Coordinator::LoadMyConfiguration(int argc, const char** argv) {
 	const int kMiniMapX = 300;
 	const int kMiniMapY = 300;
 
-	std::string buff;
+	std::string buff, buff1 = std::string();
 	// Overwrite settings if they were passed through the cli
 	char **argv_buff = const_cast<char **>(argv); // Remove const from argv
 	const Config &cfg = Config::GetConfig();
 
 	for (int k=0; k < StringOptions::MAX; k++) {
 		cfg.GetValue(CONFIG_OBJECT, CONFIG_STRING_MEMBERS[k], StrOpts[k]);
-		buff = CONFIG_STRING_MEMBERS[k] + std::string(" ") + StrOpts[k];
 		LOG(INFO) << "[Coordinator::LoadMyConfiguration]: Got: '"
-			<< buff << "'";
+			<< CONFIG_STRING_MEMBERS[k] << ": "
+			<< StrOpts[k] << "'";
 	}
 
 	if (LoadSettings(argc, argv_buff) == false) {
@@ -62,7 +62,16 @@ void Coordinator::LoadMyConfiguration(int argc, const char** argv) {
 		}
 	}
 
-	AddCommandLine("-osmesapath /usr/lib/libOSMesa.so");
+	for (int k=0; k < CLI_OPTIONS_MAX; k++, buff1 = std::string()) {
+		buff = std::string(CONFIG_CLI_MEMBER) + std::to_string(k);
+		cfg.GetValue(CONFIG_OBJECT, buff.c_str(), buff1);
+		if (buff1.empty() == true) break;
+
+		AddCommandLine(buff1);
+		LOG(INFO) << "[Coordinator::LoadMyConfiguration]: AddCommandLine(" << buff1 << ")";
+	}
+
+	// AddCommandLine();
 	sc2::RenderSettings settings(kMapX, kMapY, kMiniMapX, kMiniMapY);
 	SetRender(settings);
 }

@@ -9,9 +9,11 @@
 #ifndef COORDINATOR_HPP
 #define COORDINATOR_HPP
 
+#include <sc2api/sc2_api.h>
+
 #include <map>
 #include <string>
-#include <sc2api/sc2_api.h>
+#include <vector>
 
 class Coordinator : public sc2::Coordinator {
 	enum StringOptions {
@@ -21,9 +23,12 @@ class Coordinator : public sc2::Coordinator {
 		MAX
 	};
 	char const *CONFIG_OBJECT = "coordinator";
+	char const *CONFIG_CLI_MEMBER = "cli_option_";
 	static const std::map<std::string, sc2::Race> CONFIG_RACE_MAP;
 	static const char *CONFIG_STRING_MEMBERS[];
 	static const int CONFIG_STRING_MEMBERS_NUM;
+
+	const int CLI_OPTIONS_MAX = 10;
 
 	std::string StrOpts[StringOptions::MAX];
 
