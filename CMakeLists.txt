@@ -50,3 +50,12 @@ if(ENABLE_TESTS)
 	enable_testing()
 	add_subdirectory(tests)
 endif()
+
+# Futile test
+# add_custom_command(
+		# OUTPUT compile_commands.json
+		# COMMAND ${CMAKE_COMMAND} -E copy
+			# ${CMAKE_SOURCE_DIR}/build/compile_commands.json
+			# ${CMAKE_SOURCE_DIR}
+		# DEPENDS compile_commands.json
+	# )
