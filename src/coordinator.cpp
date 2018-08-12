@@ -62,7 +62,7 @@ void Coordinator::LoadMyConfiguration(int argc, const char** argv) {
 		}
 	}
 
-	AddCommandLine("-osmesapath /usr/lib/libOSMesa.so");
+	AddCommandLine("-eglpath /usr/lib/libEGL.so");
 	sc2::RenderSettings settings(kMapX, kMapY, kMiniMapX, kMiniMapY);
 	SetRender(settings);
 }
