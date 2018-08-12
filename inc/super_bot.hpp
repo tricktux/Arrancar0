@@ -78,9 +78,9 @@ public:
 
 	virtual void OnStep() final {
 		renderer.Render(Observation()->GetRawObservation());
-		LOG(INFO) << "Game Loop = " << Observation()->GetGameLoop();
-		LOG(INFO) << "Minerals = " << Observation()->GetMinerals();
-		LOG(INFO) << "Vespene Gas = " << Observation()->GetVespene();
+		// LOG(INFO) << "Game Loop = " << Observation()->GetGameLoop();
+		// LOG(INFO) << "Minerals = " << Observation()->GetMinerals();
+		// LOG(INFO) << "Vespene Gas = " << Observation()->GetVespene();
 	}
 
 	virtual void OnGameEnd() final {

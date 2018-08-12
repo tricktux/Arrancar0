@@ -9,6 +9,11 @@ date:       Fri Jun 01 2018 03:26
 
 # TODO
 
+## Mon Aug 06 2018 08:08
+- [ ] config: Add a default value to `GetValue`.
+- [ ] config: Stop if `LoadSettings` returns false. Load it first.
+- [ ] coordinator: Ask `renderer` for settings and set them up.
+
 ## Thu Aug 02 2018 05:17 
 - Use a schema validator for the json config. See [here](http://rapidjson.org/md_doc_schema.html)
 
