@@ -14,12 +14,12 @@ if (USE_CLANG)
 endif (USE_CLANG)
 
 
-# if(NOT CMAKE_BUILD_TYPE)
-	# set(CMAKE_BUILD_TYPE "Debug" CACHE STRING
-		# "Choose the type of build, options are: Debug Release
-		# RelWithDebInfo MinSizeRel."
-		# FORCE)
-# endif(NOT CMAKE_BUILD_TYPE)
+if(NOT CMAKE_BUILD_TYPE)
+	set(CMAKE_BUILD_TYPE "Release" CACHE STRING
+		"Choose the type of build, options are: Debug Release
+		RelWithDebInfo MinSizeRel."
+		FORCE)
+endif(NOT CMAKE_BUILD_TYPE)
 
 # Specify output directories.
 set(EXECUTABLE_OUTPUT_PATH "${PROJECT_BINARY_DIR}/bin")
