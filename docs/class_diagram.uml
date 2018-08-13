@@ -12,12 +12,17 @@ class SuperBot <Singleton> {
 	+virtual void OnGameStart() final;
 	+virtual void OnStep() final;
 	+virtual void OnEnd() final;
-	+sc2::RenderSettings GetRendererSettings()
+	+virtual void OnUnitIdle(const sc2::Unit* unit) final;
 }
 
 class Config <Singleton>
 
-class Coordinator <Singleton>
+class Coordinator <Singleton> {
+	+void LoadMyConfiguration(int argc, const char** argv);
+	+void SetMyParticipants();
+	+void SetMyRenderer(const sc2::RenderSettings &settings) { SetRender(settings); }
+	+bool LaunchGame();
+}
 
 SuperBot --* CustomRenderer
 sc2::Agent -->SuperBot
