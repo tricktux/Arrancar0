@@ -4,7 +4,10 @@
 #include <sc2api/sc2_api.h>
 #include <sc2renderer/sc2_renderer.h>
 
+#include <algorithm>
+
 #include "config.hpp"
+#include "coordinator.hpp"
 
 const char *CustomRenderer::CONFIG_INT_MEMBERS[] = {
 	"map_x",
@@ -18,7 +21,7 @@ const int CustomRenderer::CONFIG_INT_MEMBERS_NUM =
 void CustomRenderer::Render(const SC2APIProtocol::Observation* observation) {
 	if (On == false) return;
 
-	// TODO-Sun Aug 05 2018 20:29: Not working 
+	// TODO-Sun Aug 05 2018 20:29: Not working
 	// const SC2APIProtocol::Observation* observation = Observation()->GetRawObservation();
 	const SC2APIProtocol::ObservationRender& render =  observation->render_data();
 
@@ -34,17 +37,47 @@ void CustomRenderer::Render(const SC2APIProtocol::Observation* observation) {
 	sc2::renderer::Render();
 }
 
-void CustomRenderer::LoadOpts(void) {
+bool CustomRenderer::LoadOpts(void) {
 	const Config &cfg = Config::GetConfig();
 
 	cfg.GetValue(CONFIG_OBJECT, CONFIG_BOOL_MEMBER, On);
 
-	if (On == false) return;
-
+	if (On == false) return false;
 
 	for (int k=0; k < IntOptions::MAX; k++) {
 		cfg.GetValue(CONFIG_OBJECT, CONFIG_INT_MEMBERS[k], IntOpts[k]);
 		LOG(INFO) << "[CustomRenderer::LoadOpts]: Got: '"
 			<< CONFIG_INT_MEMBERS[k] << "' = " << IntOpts[k];
 	}
+
+	return true;
+}
+
+void CustomRenderer::Init(void) {
+	if (On == false) return;
+    // Initialize
+	sc2::renderer::Initialize("Rendered", 50, 50, IntOpts[MAP_X] + IntOpts[MAP_Y],
+			std::max(IntOpts[MINI_MAP_Y], IntOpts[MAP_Y]));
+}
+
+void SuperBot::OnUnitIdle(const sc2::Unit* unit) {
+	if (unit == nullptr) {
+		LOG(ERROR) << "[SuperBot::OnUnitIdle]: Bad function input";
+		return;
+	}
+
+	switch (unit->unit_type.ToType()) {
+		case sc2::UNIT_TYPEID::TERRAN_COMMANDCENTER: {
+			Actions()->UnitCommand(unit, sc2::ABILITY_ID::TRAIN_SCV);
+			LOG(INFO) << "[SuperBot::OnUnitIdle]: Building SCV";
+			break;
+		}
+		default: { break; }
+	}
+}
+
+int SuperBot::LoadRendererConfigAndSettings(sc2::RenderSettings &settings) {
+	if (renderer.LoadOpts() == false) return 0;
+
+	return renderer.GetSettings(settings);
 }

@@ -10,8 +10,7 @@ static const char **gargv;
 
 TEST(Coordinator, LoadingRaces) {
 	int argc = 3;
-	const char *cmd_opts[] = 
-	{
+	const char *cmd_opts[] = {
 		"./test_coordinator",
 		"-e",
 		"../../../StarCraftII/Versions/Base60321/SC2_x64"
@@ -22,12 +21,14 @@ TEST(Coordinator, LoadingRaces) {
 
 	int ret = cfg.ParseConfigFile(argc, cmd_opts);
 
-	ASSERT_EQ(ret,1);
+	ASSERT_EQ(ret, 1);
 
 	Coordinator &sc2_coordinator = Coordinator::GetCoordinator();
 	sc2_coordinator.LoadMyConfiguration(argc, cmd_opts);
 
-    sc2_coordinator.SetMyParticipants();
+    sc2_coordinator.SetMyRenderer();
+
+	sc2_coordinator.SetMyParticipants();
 
 	ASSERT_EQ(sc2_coordinator.LaunchGame(), true);
 
@@ -38,8 +39,7 @@ TEST(Coordinator, LoadingRaces) {
     }
 }
 
-int main(int argc, const char *argv[])
-{
+int main(int argc, const char *argv[]) {
 	// Logging flags
 	FLAGS_logtostderr = 1;
 	FLAGS_colorlogtostderr = 1;

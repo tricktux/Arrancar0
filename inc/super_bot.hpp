@@ -5,6 +5,8 @@
 #include <sc2renderer/sc2_renderer.h>
 #include <glog/logging.h>
 
+#include <algorithm>
+
 class CustomRenderer {
 	char const *CONFIG_OBJECT = "render";
 
@@ -23,8 +25,7 @@ class CustomRenderer {
 	int IntOpts[IntOptions::MAX];
 	bool On;
 
-	void LoadOpts(void);
-
+public:
 	CustomRenderer() {
 		// Default values
 		IntOpts[MAP_X] = 800;
@@ -33,35 +34,39 @@ class CustomRenderer {
 		IntOpts[MINI_MAP_Y] = 300;
 		On = false;
 	}
-public:
-	static CustomRenderer& GetRenderer() {
-		static CustomRenderer rc;
-		return rc;
-	}
 
-	CustomRenderer(CustomRenderer const&) = delete;
-	void operator= (CustomRenderer const&) = delete;
+	void Init(void);
 
-	void Init(void) {
-		LoadOpts();
-		if (On == false) return;
-
-		sc2::renderer::Initialize("Rendered", 50, 50, IntOpts[MAP_X] + IntOpts[MAP_Y],
-				std::max(IntOpts[MINI_MAP_Y], IntOpts[MAP_Y]));
-	}
 	void Close(void) { 
 		if (On == false) return;
 
 		sc2::renderer::Shutdown(); 
 	}
 	void Render(const SC2APIProtocol::Observation* observation);
+
+	int GetSettings(sc2::RenderSettings &settings) {
+		if (On == false) return 0;
+
+		settings.map_x = IntOpts[MAP_X];
+		settings.map_y = IntOpts[MAP_Y];
+		settings.minimap_x = IntOpts[MINI_MAP_X];
+		settings.minimap_y = IntOpts[MINI_MAP_Y];
+		return 1;
+	}
+	bool LoadOpts(void);
 };
 
 class SuperBot : public sc2::Agent {
-	// Make this configurable. Maybe?
-	CustomRenderer &renderer;
+private:
+	CustomRenderer renderer;
+	int num_workers;
+	sc2::Race my_race;
 
-	SuperBot() : sc2::Agent(), renderer(CustomRenderer::GetRenderer()) {}
+	SuperBot() : sc2::Agent(), num_workers(0), my_race(sc2::Race::Terran) {}
+
+	// TODO-[RM]-(Sun Aug 12 2018 22:16):
+	// - Implement this function
+	void BuildMoreWorkers(void);
 public:
 
 	static SuperBot& GetSuperBot() {
@@ -72,6 +77,9 @@ public:
 	SuperBot(SuperBot const&) = delete;
 	void operator= (SuperBot const&) = delete;
 
+	// TODO-[RM]-(Sun Aug 12 2018 22:15):
+	// - Move this to source file (.cpp)
+	// - Call Coordinator::GetPlayersRace()
 	virtual void OnGameStart() final {
 		renderer.Init();
 	}
@@ -86,6 +94,10 @@ public:
 	virtual void OnGameEnd() final {
 		renderer.Close();
 	}
+
+	virtual void OnUnitIdle(const sc2::Unit* unit) final;
+
+	int LoadRendererConfigAndSettings(sc2::RenderSettings &settings);
 };
 
 

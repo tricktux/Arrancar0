@@ -49,8 +49,12 @@ public:
 
 	void LoadMyConfiguration(int argc, const char** argv);
 	void SetMyParticipants();
+	void SetMyRenderer();
 
 	bool LaunchGame();
+	// TODO-[RM]-(Sun Aug 12 2018 22:16):  
+	// - Implement this function
+	sc2::Race GetPlayersRace();
 };
 
 #endif

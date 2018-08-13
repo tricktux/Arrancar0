@@ -35,11 +35,6 @@ const std::map<std::string, sc2::Race> Coordinator::CONFIG_RACE_MAP = {
 };
 
 void Coordinator::LoadMyConfiguration(int argc, const char** argv) {
-	const int kMapX = 800;
-	const int kMapY = 600;
-	const int kMiniMapX = 300;
-	const int kMiniMapY = 300;
-
 	std::string buff, buff1 = std::string();
 	// Overwrite settings if they were passed through the cli
 	char **argv_buff = const_cast<char **>(argv); // Remove const from argv
@@ -70,10 +65,6 @@ void Coordinator::LoadMyConfiguration(int argc, const char** argv) {
 		AddCommandLine(buff1);
 		LOG(INFO) << "[Coordinator::LoadMyConfiguration]: AddCommandLine(" << buff1 << ")";
 	}
-
-	// AddCommandLine();
-	sc2::RenderSettings settings(kMapX, kMapY, kMiniMapX, kMiniMapY);
-	SetRender(settings);
 }
 
 void Coordinator::SetMyParticipants(void) {
@@ -127,4 +118,14 @@ bool Coordinator::LaunchGame() {
 
 	LaunchStarcraft();
 	return StartGame(StrOpts[StringOptions::MAP]);
+}
+
+
+void Coordinator::SetMyRenderer() {
+	SuperBot &bot = SuperBot::GetSuperBot();
+
+	sc2::RenderSettings settings;
+
+	if (bot.LoadRendererConfigAndSettings(settings) > 0)
+		SetRender(settings);
 }
