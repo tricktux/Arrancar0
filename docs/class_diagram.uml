@@ -1,0 +1,25 @@
+
+@startuml
+
+class CustomRenderer {
+	+void Init(void);
+	+void Close(void);
+	+void Render(const SC2APIProtocol::Observation* observation);
+	+sc2::RenderSettings GetSettings(void);
+}
+
+class SuperBot <Singleton> {
+	+virtual void OnGameStart() final;
+	+virtual void OnStep() final;
+	+virtual void OnEnd() final;
+	+sc2::RenderSettings GetRendererSettings()
+}
+
+class Config <Singleton>
+
+class Coordinator <Singleton>
+
+SuperBot --* CustomRenderer
+sc2::Agent -->SuperBot
+
+@enduml
