@@ -65,6 +65,17 @@ void Coordinator::LoadMyConfiguration(int argc, const char** argv) {
 		AddCommandLine(buff1);
 		LOG(INFO) << "[Coordinator::LoadMyConfiguration]: AddCommandLine(" << buff1 << ")";
 	}
+<<<<<<< HEAD
+||||||| merged common ancestors
+
+	// AddCommandLine();
+	sc2::RenderSettings settings(kMapX, kMapY, kMiniMapX, kMiniMapY);
+	SetRender(settings);
+=======
+
+	sc2::RenderSettings settings(kMapX, kMapY, kMiniMapX, kMiniMapY);
+	SetRender(settings);
+>>>>>>> e380a6d427bcbccd2301abd2ccd9b9a2c6f96af5
 }
 
 void Coordinator::SetMyParticipants(void) {
