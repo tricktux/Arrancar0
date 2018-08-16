@@ -21,8 +21,11 @@ const int CustomRenderer::CONFIG_INT_MEMBERS_NUM =
 void CustomRenderer::Render(const SC2APIProtocol::Observation* observation) {
 	if (On == false) return;
 
-	// TODO-Sun Aug 05 2018 20:29: Not working
-	// const SC2APIProtocol::Observation* observation = Observation()->GetRawObservation();
+	if (observation == nullptr) {
+		LOG(ERROR) << "[CustomRenderer::Render]: Bad function input";
+		return;
+	}
+
 	const SC2APIProtocol::ObservationRender& render =  observation->render_data();
 
 	const SC2APIProtocol::ImageData& minimap = render.minimap();
@@ -80,4 +83,14 @@ int SuperBot::LoadRendererConfigAndSettings(sc2::RenderSettings &settings) {
 	if (renderer.LoadOpts() == false) return 0;
 
 	return renderer.GetSettings(settings);
+}
+
+void SuperBot::OnGameStart() {
+	// TODO-[RM]-(Sun Aug 12 2018 22:15):
+	// - Call Coordinator::GetPlayersRace()
+	renderer.Init();
+}
+
+void SuperBot::OnStep() {
+	renderer.Render(Observation()->GetRawObservation());
 }

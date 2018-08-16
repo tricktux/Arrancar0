@@ -58,11 +58,17 @@ public:
 
 class SuperBot : public sc2::Agent {
 private:
+	const sc2::Race DEFAULT_RACE = sc2::Race::Terran;
+
 	CustomRenderer renderer;
 	int num_workers;
 	sc2::Race my_race;
 
-	SuperBot() : sc2::Agent(), num_workers(0), my_race(sc2::Race::Terran) {}
+	SuperBot() :
+		sc2::Agent(), 
+		num_workers(0),
+		my_race(DEFAULT_RACE)
+	{}
 
 	// TODO-[RM]-(Sun Aug 12 2018 22:16):
 	// - Implement this function
@@ -77,19 +83,9 @@ public:
 	SuperBot(SuperBot const&) = delete;
 	void operator= (SuperBot const&) = delete;
 
-	// TODO-[RM]-(Sun Aug 12 2018 22:15):
-	// - Move this to source file (.cpp)
-	// - Call Coordinator::GetPlayersRace()
-	virtual void OnGameStart() final {
-		renderer.Init();
-	}
+	virtual void OnGameStart() final;
 
-	virtual void OnStep() final {
-		renderer.Render(Observation()->GetRawObservation());
-		// LOG(INFO) << "Game Loop = " << Observation()->GetGameLoop();
-		// LOG(INFO) << "Minerals = " << Observation()->GetMinerals();
-		// LOG(INFO) << "Vespene Gas = " << Observation()->GetVespene();
-	}
+	virtual void OnStep() final;
 
 	virtual void OnGameEnd() final {
 		renderer.Close();
