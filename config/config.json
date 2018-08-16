@@ -11,7 +11,7 @@
 		"opponent_race" : "Zerg",
 		"_comment" : "your bot's race",
 		"_default" : "Terran",
-		"your_race" : "Terran",
+		"bot_race" : "Terran",
 		"_comment" : "Use these in order to pass extra options. Remove the '_'",
 		"_default" : "None",
 		"cli_option_0" : "-osmesapath /usr/lib/libOSMesa.so",

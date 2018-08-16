@@ -11,15 +11,15 @@
 
 #include <sc2api/sc2_api.h>
 
-#include <map>
+#include <unordered_map>
 #include <string>
 #include <vector>
 
 class Coordinator : public sc2::Coordinator {
-  enum StringOptions { MAP = 0, YOUR_RACE, OPPONENT_RACE, MAX };
+  enum StringOptions { MAP = 0, BOT_RACE, OPPONENT_RACE, MAX };
   char const *CONFIG_OBJECT = "coordinator";
   char const *CONFIG_CLI_MEMBER = "cli_option_";
-  static const std::map<std::string, sc2::Race> CONFIG_RACE_MAP;
+  static const std::unordered_map<std::string, sc2::Race> CONFIG_RACE_MAP;
   static const char *CONFIG_STRING_MEMBERS[];
   static const int CONFIG_STRING_MEMBERS_NUM;
   static const char *CONFIG_STRING_DEFAULT_MEMBERS[];

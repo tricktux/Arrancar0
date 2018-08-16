@@ -13,26 +13,30 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 #include "config.hpp"
 #include "super_bot.hpp"
 
 const char *Coordinator::CONFIG_STRING_MEMBERS[] = {
-	"map", "your_race", "opponent_race", };
+    "map",
+    "bot_race",
+    "opponent_race",
+};
 const int Coordinator::CONFIG_STRING_MEMBERS_NUM =
     sizeof(Coordinator::CONFIG_STRING_MEMBERS) / sizeof(char *);
 
 const char *Coordinator::CONFIG_STRING_DEFAULT_MEMBERS[] = {
-	"/home/reinaldo/Documents/ML_SC2/StarCraftII/Maps/(2)16-BitLE.SC2Map",
-	"Terran", "Random"};
+    "/home/reinaldo/Documents/ML_SC2/StarCraftII/Maps/(2)16-BitLE.SC2Map",
+    "Terran", "Random"};
 const int Coordinator::CONFIG_STRING_DEFAULT_MEMBERS_NUM =
-	sizeof(Coordinator::CONFIG_STRING_DEFAULT_MEMBERS) / sizeof(char *);
+    sizeof(Coordinator::CONFIG_STRING_DEFAULT_MEMBERS) / sizeof(char *);
 
-const std::map<std::string, sc2::Race> Coordinator::CONFIG_RACE_MAP = {
-	{"Terran", sc2::Race::Terran},
-	{"Zerg", sc2::Race::Zerg},
-	{"Protoss", sc2::Race::Protoss},
-	{"Random", sc2::Race::Random}};
+const std::unordered_map<std::string, sc2::Race> Coordinator::CONFIG_RACE_MAP = {
+    {"Terran", sc2::Race::Terran},
+    {"Zerg", sc2::Race::Zerg},
+    {"Protoss", sc2::Race::Protoss},
+    {"Random", sc2::Race::Random}};
 
 void Coordinator::LoadMyConfiguration(int argc, const char **argv) {
   std::string buff, buff1 = std::string();
@@ -70,19 +74,21 @@ void Coordinator::LoadMyConfiguration(int argc, const char **argv) {
 }
 
 void Coordinator::SetMyParticipants(void) {
-  int k = StringOptions::YOUR_RACE;
-  sc2::Race buff = sc2::Race::Terran;
+  int k = StringOptions::BOT_RACE;
+  sc2::Race buff;
   std::vector<sc2::PlayerSetup> player_setup;
   SuperBot &bot = SuperBot::GetSuperBot();
 
   // Set a default option for the opponent race.
-  auto search = CONFIG_RACE_MAP.find(StrOpts[k]);
-  if (search != CONFIG_RACE_MAP.end()) {
+  // auto search = CONFIG_RACE_MAP.find(StrOpts[k]);
+  if ((auto search = CONFIG_RACE_MAP.find(StrOpts[k])) != CONFIG_RACE_MAP.end()) {
     LOG(INFO) << "[Coordinator::SetMyParticipants]: Provided race: '"
               << StrOpts[k] << "'";
     buff = search->second;
   } else {
-    LOG(WARNING) << "[Coordinator::SetMyParticipants]: Your race wasnt valid";
+    LOG(WARNING) << "[Coordinator::SetMyParticipants]: Your race wasnt valid. "
+                    "Using default.";
+	buff = CONFIG_RACE_MAP["Terran"];
   }
   player_setup.emplace_back(sc2::CreateParticipant(buff, &bot));
 
@@ -123,6 +129,4 @@ void Coordinator::SetMyRenderer() {
     SetRender(settings);
 }
 
-sc2::Race Coordinator::GetPlayersRace(void) {
-	return sc2::Race::Random;
-}
+sc2::Race Coordinator::GetPlayersRace(void) { return sc2::Race::Random; }
