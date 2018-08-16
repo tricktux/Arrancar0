@@ -2,14 +2,18 @@
 	"coordinator": 
 	{
 		"_comment" : "Absolute path: Any .SC2Map file. Relative path: Any .SC2Map file relative to either the library or installation maps folder",
+		"_default" : "/home/reinaldo/Documents/ML_SC2/StarCraftII/Maps/(2)16-BitLE.SC2Map",
 		"map" : "/home/reinaldo/Documents/ML_SC2/StarCraftII/Maps/(2)16-BitLE.SC2Map",
 		"_comment" : "path to StarCraftII executable",
 		"-e" : "This is not used anymore. You have to pass it via cli.",
 		"_comment" : "can be Zerg, Protoss, Terran, Random. Default if not specified: Random",
+		"_default" : "Random",
 		"opponent_race" : "Zerg",
 		"_comment" : "your bot's race",
+		"_default" : "Terran",
 		"your_race" : "Terran",
 		"_comment" : "Use these in order to pass extra options. Remove the '_'",
+		"_default" : "None",
 		"cli_option_0" : "-osmesapath /usr/lib/libOSMesa.so",
 		"_cli_option_1" : "-elgpath /usr/lib/libEGL.so",
 		"_cli_option_2" : "-displayMode 0"
