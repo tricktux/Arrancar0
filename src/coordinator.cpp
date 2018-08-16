@@ -75,20 +75,23 @@ void Coordinator::LoadMyConfiguration(int argc, const char **argv) {
 
 void Coordinator::SetMyParticipants(void) {
   int k = StringOptions::BOT_RACE;
-  sc2::Race buff;
+  // TODO-Thu Aug 16 2018 18:31:
+  // - Figure out a way to avoid doing this here.
+  // - If it cant determine the race a better way not hardcoded like this 
+  // assign an sc2::Race
+  sc2::Race buff = sc2::Race::Terran;
   std::vector<sc2::PlayerSetup> player_setup;
   SuperBot &bot = SuperBot::GetSuperBot();
 
   // Set a default option for the opponent race.
-  // auto search = CONFIG_RACE_MAP.find(StrOpts[k]);
-  if ((auto search = CONFIG_RACE_MAP.find(StrOpts[k])) != CONFIG_RACE_MAP.end()) {
+  auto search = CONFIG_RACE_MAP.find(StrOpts[k]);
+  if (search != CONFIG_RACE_MAP.end()) {
     LOG(INFO) << "[Coordinator::SetMyParticipants]: Provided race: '"
               << StrOpts[k] << "'";
     buff = search->second;
   } else {
     LOG(WARNING) << "[Coordinator::SetMyParticipants]: Your race wasnt valid. "
                     "Using default.";
-	buff = CONFIG_RACE_MAP["Terran"];
   }
   player_setup.emplace_back(sc2::CreateParticipant(buff, &bot));
 
