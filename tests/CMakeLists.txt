@@ -14,6 +14,8 @@ file(
 		FILES_MATCHING PATTERN "*.json"
 	)
 
+# TODO-[RM]-(Thu Aug 16 2018 06:02):
+# - Make this a function. That you call in a loop
 # Add executable and list sources to the executable
 add_executable(test_config test_config.cpp ${CMAKE_SOURCE_DIR}/src/config.cpp)
 
