@@ -58,16 +58,13 @@ public:
 
 class SuperBot : public sc2::Agent {
 private:
-	const sc2::Race DEFAULT_RACE = sc2::Race::Terran;
-
-	CustomRenderer renderer;
-	int num_workers;
-	sc2::Race my_race;
+	CustomRenderer CustRender;
+	int NumWorkers;
+	sc2::Race MyRace;
 
 	SuperBot() :
 		sc2::Agent(), 
-		num_workers(0),
-		my_race(DEFAULT_RACE)
+		NumWorkers(0)
 	{}
 
 	// TODO-[RM]-(Sun Aug 12 2018 22:16):
@@ -88,11 +85,13 @@ public:
 	virtual void OnStep() final;
 
 	virtual void OnGameEnd() final {
-		renderer.Close();
+		CustRender.Close();
 	}
 
 	virtual void OnUnitIdle(const sc2::Unit* unit) final;
 
+	// TODO-[RM]-(Sat Aug 18 2018 10:20): Fix this mess of a function here
+	// Called by Coordinator::SetMyRenderer
 	int LoadRendererConfigAndSettings(sc2::RenderSettings &settings);
 };
 

@@ -58,7 +58,7 @@ bool CustomRenderer::LoadOpts(void) {
 
 void CustomRenderer::Init(void) {
 	if (On == false) return;
-    // Initialize
+
 	sc2::renderer::Initialize("Rendered", 50, 50, IntOpts[MAP_X] + IntOpts[MAP_Y],
 			std::max(IntOpts[MINI_MAP_Y], IntOpts[MAP_Y]));
 }
@@ -80,17 +80,16 @@ void SuperBot::OnUnitIdle(const sc2::Unit* unit) {
 }
 
 int SuperBot::LoadRendererConfigAndSettings(sc2::RenderSettings &settings) {
-	if (renderer.LoadOpts() == false) return 0;
+	if (CustRender.LoadOpts() == false) return 0;
 
-	return renderer.GetSettings(settings);
+	return CustRender.GetSettings(settings);
 }
 
 void SuperBot::OnGameStart() {
-	// TODO-[RM]-(Sun Aug 12 2018 22:15):
-	// - Call Coordinator::GetPlayersRace()
-	renderer.Init();
+	
+	CustRender.Init();
 }
 
 void SuperBot::OnStep() {
-	renderer.Render(Observation()->GetRawObservation());
+	CustRender.Render(Observation()->GetRawObservation());
 }
