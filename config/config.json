@@ -1,6 +1,5 @@
 {
-	"coordinator": 
-	{
+	"coordinator": {
 		"_comment" : "Absolute path: Any .SC2Map file. Relative path: Any .SC2Map file relative to either the library or installation maps folder",
 		"_default" : "/home/reinaldo/Documents/ML_SC2/StarCraftII/Maps/(2)16-BitLE.SC2Map",
 		"map" : "/home/reinaldo/Documents/ML_SC2/StarCraftII/Maps/(2)16-BitLE.SC2Map",
@@ -18,12 +17,13 @@
 		"_cli_option_1" : "-elgpath /usr/lib/libEGL.so",
 		"_cli_option_2" : "-displayMode 0"
 	},
-	"render" :
-	{
+	"bot": {
+		"max_num_workers" : 70
+	},
+	"render" : {
 		"on" : true
 	},
-	"replay" :
-	{
+	"replay" : {
 		"on" : false,
 		"name" : "map_%T"
 	}
