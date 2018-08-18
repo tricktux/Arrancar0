@@ -74,37 +74,32 @@ void Coordinator::LoadMyConfiguration(int argc, const char **argv) {
 }
 
 void Coordinator::SetMyParticipants(void) {
-  int k = StringOptions::BOT_RACE;
-  sc2::Race buff;
   std::vector<sc2::PlayerSetup> player_setup;
   SuperBot &bot = SuperBot::GetSuperBot();
 
   // Set a default option for the opponent race.
-  // auto search = CONFIG_RACE_MAP.find(StrOpts[k]);
-  if ((auto search = CONFIG_RACE_MAP.find(StrOpts[k])) != CONFIG_RACE_MAP.end()) {
+  auto search = CONFIG_RACE_MAP.find(StrOpts[StringOptions::BOT_RACE]);
+  if (search != CONFIG_RACE_MAP.end()) {
     LOG(INFO) << "[Coordinator::SetMyParticipants]: Provided race: '"
-              << StrOpts[k] << "'";
-    buff = search->second;
+              << StrOpts[StringOptions::BOT_RACE] << "'";
+    BotRace = search->second;
   } else {
     LOG(WARNING) << "[Coordinator::SetMyParticipants]: Your race wasnt valid. "
                     "Using default.";
-	buff = CONFIG_RACE_MAP["Terran"];
   }
-  player_setup.emplace_back(sc2::CreateParticipant(buff, &bot));
+  player_setup.emplace_back(sc2::CreateParticipant(BotRace, &bot));
 
   // Decode opponent race
-  k = StringOptions::OPPONENT_RACE;
-  buff = sc2::Race::Random;
-  search = CONFIG_RACE_MAP.find(StrOpts[k]);
+  search = CONFIG_RACE_MAP.find(StrOpts[StringOptions::OPPONENT_RACE]);
 
   if (search != CONFIG_RACE_MAP.end()) {
     LOG(INFO) << "[Coordinator::SetMyParticipants]: Provided race: '"
-              << StrOpts[k] << "'";
-    buff = search->second;
+              << StrOpts[StringOptions::OPPONENT_RACE] << "'";
+    OpponentRace = search->second;
   } else {
     LOG(WARNING) << "[Coordinator::SetMyParticipants]: Your race wasnt valid";
   }
-  player_setup.emplace_back(sc2::CreateComputer(buff));
+  player_setup.emplace_back(sc2::CreateComputer(OpponentRace));
 
   SetParticipants(player_setup);
 }
@@ -128,5 +123,3 @@ void Coordinator::SetMyRenderer() {
   if (bot.LoadRendererConfigAndSettings(settings) > 0)
     SetRender(settings);
 }
-
-sc2::Race Coordinator::GetPlayersRace(void) { return sc2::Race::Random; }

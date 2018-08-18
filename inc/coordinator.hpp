@@ -28,10 +28,14 @@ class Coordinator : public sc2::Coordinator {
   const int CLI_OPTIONS_MAX = 10;
 
   std::string StrOpts[StringOptions::MAX];
+  sc2::Race BotRace;
+  sc2::Race OpponentRace;
 
   Coordinator() : sc2::Coordinator() {
     for (int k = 0; k < CONFIG_STRING_DEFAULT_MEMBERS_NUM; k++)
       StrOpts[k] = CONFIG_STRING_DEFAULT_MEMBERS[k];
+	BotRace = sc2::Race::Terran;
+	OpponentRace = sc2::Race::Random;
   }
 
 public:
@@ -48,7 +52,7 @@ public:
   void SetMyRenderer();
 
   bool LaunchGame();
-  sc2::Race GetPlayersRace();
+  sc2::Race GetBotRace() { return BotRace; }
 };
 
 #endif
