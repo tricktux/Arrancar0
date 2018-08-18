@@ -24,7 +24,6 @@ class Coordinator <Singleton> {
 	+bool LaunchGame();
 }
 
-SuperBot --* CustomRenderer
 sc2::Agent -->SuperBot
 
 @enduml
