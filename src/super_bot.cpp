@@ -86,7 +86,6 @@ int SuperBot::LoadRendererConfigAndSettings(sc2::RenderSettings &settings) {
 }
 
 void SuperBot::OnGameStart() {
-	
 	CustRender.Init();
 }
 

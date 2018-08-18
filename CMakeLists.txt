@@ -41,7 +41,7 @@ find_package(GLog REQUIRED)
 find_package(GTest REQUIRED)
 
 # Build with c++14 support, required by sc2api.
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 17)
 
 add_subdirectory("src")
 

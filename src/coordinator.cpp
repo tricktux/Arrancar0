@@ -74,6 +74,10 @@ void Coordinator::LoadMyConfiguration(int argc, const char **argv) {
 }
 
 void Coordinator::SetMyParticipants(void) {
+  // TODO-Thu Aug 16 2018 18:31:
+  // - Figure out a way to avoid doing this here.
+  // - If it cant determine the race a better way not hardcoded like this 
+  // assign an sc2::Race
   std::vector<sc2::PlayerSetup> player_setup;
   SuperBot &bot = SuperBot::GetSuperBot();
 
