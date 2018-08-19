@@ -21,7 +21,16 @@
 		"max_num_workers" : 70
 	},
 	"render" : {
-		"on" : true
+		"_default": false,
+		"on" : true,
+		"_default": 800,
+		"map_x": 800,
+		"_default": 600,
+		"map_y": 600,
+		"_default": 300,
+		"mini_map_x": 300,
+		"_default": 300,
+		"mini_map_y" : 300
 	},
 	"replay" : {
 		"on" : false,
