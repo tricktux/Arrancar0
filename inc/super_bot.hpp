@@ -59,17 +59,14 @@ public:
 class SuperBot : public sc2::Agent {
 private:
 	CustomRenderer CustRender;
-	int NumWorkers;
 	sc2::Race MyRace;
 
 	SuperBot() :
 		sc2::Agent(), 
-		NumWorkers(0)
 	{}
 
-	// TODO-[RM]-(Sun Aug 12 2018 22:16):
-	// - Implement this function
-	void BuildMoreWorkers(void);
+	// Called from OnUnitIdle::TERRAN_COMMANDCENTER
+	void BuildMoreWorkers(const sc2::Unit* unit);
 public:
 
 	static SuperBot& GetSuperBot() {
@@ -90,7 +87,6 @@ public:
 
 	virtual void OnUnitIdle(const sc2::Unit* unit) final;
 
-	// TODO-[RM]-(Sat Aug 18 2018 10:20): Fix this mess of a function here
 	// Called by Coordinator::SetMyRenderer
 	int LoadRendererConfigAndSettings(sc2::RenderSettings &settings);
 };

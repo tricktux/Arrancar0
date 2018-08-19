@@ -12,20 +12,20 @@ int argc = 3;
 const char *cmd_opts[] = {"./test_coordinator", "-e",
                           "../../../StarCraftII/Versions/Base60321/SC2_x64"};
 
-TEST (Coordinator, LoadingRaces) {
-	Config &cfg = Config::GetConfig();
+// TEST (Coordinator, LoadingRaces) {
+	// Config &cfg = Config::GetConfig();
 
-	int ret = cfg.ParseConfigFile(argc, cmd_opts);
+	// int ret = cfg.ParseConfigFile(argc, cmd_opts);
 
-	ASSERT_EQ(ret, 1);
+	// ASSERT_EQ(ret, 1);
 
-	Coordinator &sc2_coordinator = Coordinator::GetCoordinator();
-	sc2_coordinator.LoadMyConfiguration(argc, cmd_opts);
+	// Coordinator &sc2_coordinator = Coordinator::GetCoordinator();
+	// sc2_coordinator.LoadMyConfiguration(argc, cmd_opts);
 
-	sc2_coordinator.SetMyRenderer();
+	// sc2_coordinator.SetMyRenderer();
 
-	sc2_coordinator.SetMyParticipants();
-}
+	// sc2_coordinator.SetMyParticipants();
+// }
 
 TEST(Coordinator, FullRun) {
   Config &cfg = Config::GetConfig();

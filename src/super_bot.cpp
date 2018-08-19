@@ -71,10 +71,16 @@ void SuperBot::OnUnitIdle(const sc2::Unit* unit) {
 
 	switch (unit->unit_type.ToType()) {
 		case sc2::UNIT_TYPEID::TERRAN_COMMANDCENTER: {
-			Actions()->UnitCommand(unit, sc2::ABILITY_ID::TRAIN_SCV);
-			LOG(INFO) << "[SuperBot::OnUnitIdle]: Building SCV";
+			BuildMoreWorkers(unit);
 			break;
 		}
+
+		case sc2::UNIT_TYPEID::PROTOSS_PROBE:
+		case sc2::UNIT_TYPEID::ZERG_DRONE:
+		case sc2::UNIT_TYPEID::TERRAN_SCV: {
+			 Actions()->UnitCommand(unit, sc2::ABILITY_ID::HARVEST_GATHER);
+			 break;
+		 }
 		default: { break; }
 	}
 }
@@ -86,9 +92,23 @@ int SuperBot::LoadRendererConfigAndSettings(sc2::RenderSettings &settings) {
 }
 
 void SuperBot::OnGameStart() {
+	MyRace = Coordinator::GetCoordinator().GetBotRace();
 	CustRender.Init();
 }
 
 void SuperBot::OnStep() {
 	CustRender.Render(Observation()->GetRawObservation());
+}
+
+void SuperBot::BuildMoreWorkers(const sc2::Unit* unit) {
+	if ((unit == nullptr) ||
+			(unit->unit_type.ToType() != sc2::UNIT_TYPEID::TERRAN_COMMANDCENTER)) {
+		LOG(ERROR) << "[SuperBot::OnUnitIdle]: Bad function input";
+		return;
+	}
+
+	int workers = Observation()->GetFoodWorkers();
+
+	if (workers < 70)
+		Actions()->UnitCommand(unit, sc2::ABILITY_ID::TRAIN_SCV);
 }
