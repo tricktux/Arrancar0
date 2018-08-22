@@ -87,6 +87,7 @@ void SuperBot::OnUnitIdle(const sc2::Unit* unit) {
 		case sc2::UNIT_TYPEID::TERRAN_SCV:
 			 Actions()->UnitCommand(unit, sc2::ABILITY_ID::HARVEST_GATHER);
 			 break;
+
 		default: { break; }
 	}
 }
