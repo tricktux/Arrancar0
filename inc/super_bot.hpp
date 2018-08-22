@@ -6,6 +6,7 @@
 #include <glog/logging.h>
 
 #include <algorithm>
+#include <array>
 
 class CustomRenderer {
 	char const *CONFIG_OBJECT = "render";
@@ -22,9 +23,12 @@ class CustomRenderer {
 		MAX
 	};
 
+
+	// TODO-[RM]-(Wed Aug 22 2018 06:02):  Morph into std::array
 	int IntOpts[IntOptions::MAX];
 	bool On;
 
+	bool LoadOpts(void);
 public:
 	CustomRenderer() {
 		// Default values
@@ -33,6 +37,8 @@ public:
 		IntOpts[MINI_MAP_X] = 300;
 		IntOpts[MINI_MAP_Y] = 300;
 		On = false;
+
+		LoadOpts();
 	}
 
 	void Init(void);
@@ -53,20 +59,34 @@ public:
 		settings.minimap_y = IntOpts[MINI_MAP_Y];
 		return 1;
 	}
-	bool LoadOpts(void);
 };
 
 class SuperBot : public sc2::Agent {
-private:
+	char const *CONFIG_OBJECT = "bot";
+	static const char *CONFIG_INT_MEMBERS[];
+	static const int CONFIG_INT_MEMBERS_NUM;
+
+	enum IntOptions {
+		MAX_NUM_WORKERS,
+		MAX
+	};
+
 	CustomRenderer CustRender;
 	sc2::Race MyRace;
+	std::array<int, IntOptions::MAX> IntOpts;
 
 	SuperBot() :
-		sc2::Agent(), 
-	{}
+		sc2::Agent()
+	{
+		MyRace = sc2::Race::Terran;
+		IntOpts[MAX_NUM_WORKERS] = 70;
+
+		LoadConfig();
+	}
 
 	// Called from OnUnitIdle::TERRAN_COMMANDCENTER
 	void BuildMoreWorkers(const sc2::Unit* unit);
+	void LoadConfig(void);
 public:
 
 	static SuperBot& GetSuperBot() {
@@ -81,14 +101,14 @@ public:
 
 	virtual void OnStep() final;
 
-	virtual void OnGameEnd() final {
-		CustRender.Close();
-	}
+	virtual void OnGameEnd() final { CustRender.Close(); }
 
 	virtual void OnUnitIdle(const sc2::Unit* unit) final;
 
 	// Called by Coordinator::SetMyRenderer
-	int LoadRendererConfigAndSettings(sc2::RenderSettings &settings);
+	int LoadRendererSettings(sc2::RenderSettings &settings) {
+		return CustRender.GetSettings(settings);
+	}
 };
 
 

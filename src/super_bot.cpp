@@ -18,6 +18,12 @@ const char *CustomRenderer::CONFIG_INT_MEMBERS[] = {
 const int CustomRenderer::CONFIG_INT_MEMBERS_NUM =
 	sizeof(CustomRenderer::CONFIG_INT_MEMBERS)/sizeof(char *);
 
+const char *SuperBot::CONFIG_INT_MEMBERS[] = {
+	"max_num_workers"
+};
+const int SuperBot::CONFIG_INT_MEMBERS_NUM =
+	sizeof(SuperBot::CONFIG_INT_MEMBERS)/sizeof(char *);
+
 void CustomRenderer::Render(const SC2APIProtocol::Observation* observation) {
 	if (On == false) return;
 
@@ -70,25 +76,19 @@ void SuperBot::OnUnitIdle(const sc2::Unit* unit) {
 	}
 
 	switch (unit->unit_type.ToType()) {
-		case sc2::UNIT_TYPEID::TERRAN_COMMANDCENTER: {
+		case sc2::UNIT_TYPEID::ZERG_HATCHERY:
+		case sc2::UNIT_TYPEID::PROTOSS_NEXUS:
+		case sc2::UNIT_TYPEID::TERRAN_COMMANDCENTER:
 			BuildMoreWorkers(unit);
 			break;
-		}
 
 		case sc2::UNIT_TYPEID::PROTOSS_PROBE:
 		case sc2::UNIT_TYPEID::ZERG_DRONE:
-		case sc2::UNIT_TYPEID::TERRAN_SCV: {
+		case sc2::UNIT_TYPEID::TERRAN_SCV:
 			 Actions()->UnitCommand(unit, sc2::ABILITY_ID::HARVEST_GATHER);
 			 break;
-		 }
 		default: { break; }
 	}
-}
-
-int SuperBot::LoadRendererConfigAndSettings(sc2::RenderSettings &settings) {
-	if (CustRender.LoadOpts() == false) return 0;
-
-	return CustRender.GetSettings(settings);
 }
 
 void SuperBot::OnGameStart() {
@@ -109,6 +109,24 @@ void SuperBot::BuildMoreWorkers(const sc2::Unit* unit) {
 
 	int workers = Observation()->GetFoodWorkers();
 
+	// TODO-[RM]-(Wed Aug 22 2018 05:32):  Magic number here. Load it from config
 	if (workers < 70)
 		Actions()->UnitCommand(unit, sc2::ABILITY_ID::TRAIN_SCV);
+}
+
+// TODO-[RM]-(Wed Aug 22 2018 06:02):  Finish loading options
+void SuperBot::LoadConfig(void) {
+	const Config &cfg = Config::GetConfig();
+
+	// cfg.GetValue(CONFIG_OBJECT, CONFIG_BOOL_MEMBER, On);
+
+	// if (On == false) return false;
+
+	// for (int k=0; k < IntOptions::MAX; k++) {
+		// cfg.GetValue(CONFIG_OBJECT, CONFIG_INT_MEMBERS[k], IntOpts[k]);
+		// LOG(INFO) << "[CustomRenderer::LoadOpts]: Got: '"
+			// << CONFIG_INT_MEMBERS[k] << "' = " << IntOpts[k];
+	// }
+
+	// return true;
 }

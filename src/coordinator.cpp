@@ -124,6 +124,6 @@ void Coordinator::SetMyRenderer() {
 
   sc2::RenderSettings settings;
 
-  if (bot.LoadRendererConfigAndSettings(settings) > 0)
+  if (bot.LoadRendererSettings(settings) > 0)
     SetRender(settings);
 }
