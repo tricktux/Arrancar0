@@ -85,6 +85,12 @@ class SuperBot : public sc2::Agent {
 	// Called from OnUnitIdle::TERRAN_COMMANDCENTER
 	void BuildMoreWorkers(const sc2::Unit* unit);
 	void LoadConfig(void);
+	bool TryBuildStructure(sc2::ABILITY_ID ability_type_for_structure,
+			sc2::UNIT_TYPEID unit_type = sc2::UNIT_TYPEID::TERRAN_SCV);
+	bool TryBuildSupplyDepot();
+	const sc2::Unit* FindNearestUnit(const sc2::Point2D &start, sc2::UNIT_TYPEID unit_type);
+	const sc2::Unit* GetUnit(sc2::UNIT_TYPEID unit_type);
+	void SendIdleWorkerToMine(const sc2::Unit *worker);
 public:
 
 	static SuperBot& GetSuperBot() {
@@ -107,11 +113,6 @@ public:
 	int LoadRendererSettings(sc2::RenderSettings &settings) {
 		return CustRender.GetSettings(settings);
 	}
-
-
-	bool TryBuildStructure(sc2::ABILITY_ID ability_type_for_structure,
-			sc2::UNIT_TYPEID unit_type = sc2::UNIT_TYPEID::TERRAN_SCV);
-	bool TryBuildSupplyDepot();
 };
 
 
