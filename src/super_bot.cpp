@@ -101,6 +101,7 @@ void SuperBot::OnGameStart() {
 void SuperBot::OnStep() {
   CustRender.Render(Observation()->GetRawObservation());
   TryBuildSupplyDepot();
+  // TODO-Sun Aug 26 2018 16:27:  Get vespine gas.
 }
 
 void SuperBot::BuildMoreWorkers(const sc2::Unit *unit) {
