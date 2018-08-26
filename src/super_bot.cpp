@@ -85,7 +85,7 @@ void SuperBot::OnUnitIdle(const sc2::Unit* unit) {
 		case sc2::UNIT_TYPEID::PROTOSS_PROBE:
 		case sc2::UNIT_TYPEID::ZERG_DRONE:
 		case sc2::UNIT_TYPEID::TERRAN_SCV:
-			 Actions()->UnitCommand(unit, sc2::ABILITY_ID::HARVEST_GATHER);
+			 Actions()->UnitCommand(unit, sc2::ABILITY_ID::HARVEST_GATHER_SCV);
 			 break;
 
 		default: { break; }
@@ -99,6 +99,7 @@ void SuperBot::OnGameStart() {
 
 void SuperBot::OnStep() {
 	CustRender.Render(Observation()->GetRawObservation());
+	TryBuildSupplyDepot();
 }
 
 void SuperBot::BuildMoreWorkers(const sc2::Unit* unit) {
@@ -108,10 +109,10 @@ void SuperBot::BuildMoreWorkers(const sc2::Unit* unit) {
 		return;
 	}
 
-	int workers = Observation()->GetFoodWorkers();
-
-	if (workers < IntOpts[MAX_NUM_WORKERS])
+	if (Observation()->GetFoodWorkers() < IntOpts[MAX_NUM_WORKERS]) {
 		Actions()->UnitCommand(unit, sc2::ABILITY_ID::TRAIN_SCV);
+		LOG(INFO) << "[SuperBot::BuildMoreWorkers]: Building more scvs";
+	}
 }
 
 void SuperBot::LoadConfig(void) {
@@ -122,4 +123,53 @@ void SuperBot::LoadConfig(void) {
 		LOG(INFO) << "[SuperBot::LoadConfig]: Got: '"
 			<< CONFIG_INT_MEMBERS[k] << "' = " << IntOpts[k];
 	}
+}
+
+bool SuperBot::TryBuildStructure(sc2::ABILITY_ID ability_type_for_structure,
+		sc2::UNIT_TYPEID unit_type) {
+	const sc2::ObservationInterface* observation = Observation();
+
+	// If a unit already is building a supply structure of this type, do nothing.
+	// Also get an scv to build the structure.
+	const sc2::Unit* unit_to_build = nullptr;
+	sc2::Units units = observation->GetUnits(sc2::Unit::Alliance::Self);
+	for (const auto& unit : units) {
+		for (const auto& order : unit->orders) {
+			if (order.ability_id == ability_type_for_structure) {
+				return false;
+			}
+		}
+
+		if (unit->unit_type == unit_type) {
+			unit_to_build = unit;
+		}
+	}
+
+	if (unit_to_build == nullptr) {
+		LOG(ERROR) << "[SuperBot::TryBuildStructure]: Bad pointer unit_to_build";
+		return false;
+	}
+
+	float rx = sc2::GetRandomScalar();
+	float ry = sc2::GetRandomScalar();
+
+	LOG(INFO) << "[SuperBot::TryBuildStructure]: Building more supply depots";
+	Actions()->UnitCommand(unit_to_build,
+			ability_type_for_structure,
+			sc2::Point2D(unit_to_build->pos.x + rx * 15.0f, unit_to_build->pos.y + ry * 15.0f));
+
+	return true;
+}
+
+bool SuperBot::TryBuildSupplyDepot() {
+	const sc2::ObservationInterface* observation = Observation();
+
+	// If we are not supply capped, don't build a supply depot.
+	if (observation->GetFoodUsed() <= observation->GetFoodCap() - 10)
+		return false;
+
+	LOG(INFO) << "[SuperBot::TryBuildSupplyDepot]: " << observation->GetFoodUsed() << "/"
+		<< observation->GetFoodCap() << " supply.";
+	// Try and build a depot. Find a random SCV and give it the order.
+	return TryBuildStructure(sc2::ABILITY_ID::BUILD_SUPPLYDEPOT);
 }

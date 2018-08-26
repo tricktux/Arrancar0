@@ -12,22 +12,7 @@ int argc = 3;
 const char *cmd_opts[] = {"./test_coordinator", "-e",
                           "../../../StarCraftII/Versions/Base60321/SC2_x64"};
 
-// TEST (Coordinator, LoadingRaces) {
-	// Config &cfg = Config::GetConfig();
-
-	// int ret = cfg.ParseConfigFile(argc, cmd_opts);
-
-	// ASSERT_EQ(ret, 1);
-
-	// Coordinator &sc2_coordinator = Coordinator::GetCoordinator();
-	// sc2_coordinator.LoadMyConfiguration(argc, cmd_opts);
-
-	// sc2_coordinator.SetMyRenderer();
-
-	// sc2_coordinator.SetMyParticipants();
-// }
-
-TEST(Coordinator, FullRun) {
+TEST(Coordinator, LoadsElgPathProperly) {
   Config &cfg = Config::GetConfig();
 
   int ret = cfg.ParseConfigFile(argc, cmd_opts);
@@ -38,6 +23,33 @@ TEST(Coordinator, FullRun) {
   sc2_coordinator.LoadMyConfiguration(argc, cmd_opts);
 
   sc2_coordinator.SetMyRenderer();
+
+  sc2_coordinator.AddMyCommandLineOpts();
+
+  sc2_coordinator.SetMyParticipants();
+
+  ASSERT_EQ(sc2_coordinator.LaunchGame(), true);
+
+  while (sc2_coordinator.Update()) {
+    if (sc2::PollKeyPress()) {
+      break;
+    }
+  }
+}
+
+TEST(Coordinator, DISABLED_FullRun) {
+  Config &cfg = Config::GetConfig();
+
+  int ret = cfg.ParseConfigFile(argc, cmd_opts);
+
+  ASSERT_EQ(ret, 1);
+
+  Coordinator &sc2_coordinator = Coordinator::GetCoordinator();
+  sc2_coordinator.LoadMyConfiguration(argc, cmd_opts);
+
+  sc2_coordinator.SetMyRenderer();
+
+  sc2_coordinator.AddMyCommandLineOpts();
 
   sc2_coordinator.SetMyParticipants();
 

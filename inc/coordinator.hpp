@@ -48,8 +48,9 @@ public:
   void operator=(Coordinator const &) = delete;
 
   void LoadMyConfiguration(int argc, const char **argv);
-  void SetMyParticipants();
   void SetMyRenderer();
+  void AddMyCommandLineOpts();
+  void SetMyParticipants();
 
   bool LaunchGame();
   sc2::Race GetBotRace() { return BotRace; }

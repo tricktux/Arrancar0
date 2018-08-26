@@ -39,7 +39,7 @@ const std::unordered_map<std::string, sc2::Race> Coordinator::CONFIG_RACE_MAP = 
     {"Random", sc2::Race::Random}};
 
 void Coordinator::LoadMyConfiguration(int argc, const char **argv) {
-  std::string buff, buff1 = std::string();
+  std::string buff;
   // Overwrite settings if they were passed through the cli
   char **argv_buff = const_cast<char **>(argv); // Remove const from argv
   const Config &cfg = Config::GetConfig();
@@ -60,17 +60,22 @@ void Coordinator::LoadMyConfiguration(int argc, const char **argv) {
                 << "] = " << argv[k];
     }
   }
+}
 
-  for (int k = 0; k < CLI_OPTIONS_MAX; k++, buff1 = std::string()) {
-    buff = std::string(CONFIG_CLI_MEMBER) + std::to_string(k);
-    cfg.GetValue(CONFIG_OBJECT, buff.c_str(), buff1);
-    if (buff1.empty() == true)
-      break;
+void Coordinator::AddMyCommandLineOpts() {
+	std::string buff, buff1 = std::string();
+	const Config &cfg = Config::GetConfig();
 
-    AddCommandLine(buff1);
-    LOG(INFO) << "[Coordinator::LoadMyConfiguration]: AddCommandLine(" << buff1
-              << ")";
-  }
+	for (int k = 0; k < CLI_OPTIONS_MAX; k++, buff1 = std::string()) {
+		buff = std::string(CONFIG_CLI_MEMBER) + std::to_string(k);
+		cfg.GetValue(CONFIG_OBJECT, buff.c_str(), buff1);
+		if (buff1.empty() == true)
+			break;
+
+		AddCommandLine(buff1);
+		LOG(INFO) << "[Coordinator::AddMyCommandLineOpts]: AddCommandLine(" << buff1
+			<< ")";
+	}
 }
 
 void Coordinator::SetMyParticipants(void) {
