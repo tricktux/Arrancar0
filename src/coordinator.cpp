@@ -95,7 +95,6 @@ void Coordinator::SetMyParticipants(void) {
 
   // Decode opponent race
   search = CONFIG_RACE_MAP.find(StrOpts[StringOptions::OPPONENT_RACE]);
-
   if (search != CONFIG_RACE_MAP.end()) {
     LOG(INFO) << "[Coordinator::SetMyParticipants]: Provided race: '"
               << StrOpts[StringOptions::OPPONENT_RACE] << "'";

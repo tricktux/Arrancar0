@@ -110,24 +110,16 @@ void SuperBot::BuildMoreWorkers(const sc2::Unit* unit) {
 
 	int workers = Observation()->GetFoodWorkers();
 
-	// TODO-[RM]-(Wed Aug 22 2018 05:32):  Magic number here. Load it from config
-	if (workers < 70)
+	if (workers < IntOpts[MAX_NUM_WORKERS])
 		Actions()->UnitCommand(unit, sc2::ABILITY_ID::TRAIN_SCV);
 }
 
-// TODO-[RM]-(Wed Aug 22 2018 06:02):  Finish loading options
 void SuperBot::LoadConfig(void) {
 	const Config &cfg = Config::GetConfig();
 
-	// cfg.GetValue(CONFIG_OBJECT, CONFIG_BOOL_MEMBER, On);
-
-	// if (On == false) return false;
-
-	// for (int k=0; k < IntOptions::MAX; k++) {
-		// cfg.GetValue(CONFIG_OBJECT, CONFIG_INT_MEMBERS[k], IntOpts[k]);
-		// LOG(INFO) << "[CustomRenderer::LoadOpts]: Got: '"
-			// << CONFIG_INT_MEMBERS[k] << "' = " << IntOpts[k];
-	// }
-
-	// return true;
+	for (int k=0; k < IntOptions::MAX; k++) {
+		cfg.GetValue(CONFIG_OBJECT, CONFIG_INT_MEMBERS[k], IntOpts[k]);
+		LOG(INFO) << "[SuperBot::LoadConfig]: Got: '"
+			<< CONFIG_INT_MEMBERS[k] << "' = " << IntOpts[k];
+	}
 }

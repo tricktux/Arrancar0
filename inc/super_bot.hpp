@@ -23,9 +23,7 @@ class CustomRenderer {
 		MAX
 	};
 
-
-	// TODO-[RM]-(Wed Aug 22 2018 06:02):  Morph into std::array
-	int IntOpts[IntOptions::MAX];
+	std::array<int,IntOptions::MAX> IntOpts;
 	bool On;
 
 	bool LoadOpts(void);
