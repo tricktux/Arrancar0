@@ -9,6 +9,11 @@ date:       Fri Jun 01 2018 03:26
 
 # TODO
 
+## Fri Oct 05 2018 06:57
+- [ ] general: Finish all the tutorials with the challenges
+- [ ] general: Make so that you can configure a build order.
+	- Example: At 15 build rack, 16 CC, 8 vespene gas.
+
 ## Mon Aug 06 2018 08:08
 - [ ] config: Add a default value to `GetValue`.
 - [ ] config: Stop if `LoadSettings` returns false. Load it first.
