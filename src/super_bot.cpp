@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <limits>
+#include <string>
 
 #include "config.hpp"
 #include "coordinator.hpp"
@@ -14,7 +15,8 @@ const char *CustomRenderer::CONFIG_INT_MEMBERS[] = {"map_x", "map_y",
 const int CustomRenderer::CONFIG_INT_MEMBERS_NUM =
     sizeof(CustomRenderer::CONFIG_INT_MEMBERS) / sizeof(char *);
 
-const char *SuperBot::CONFIG_INT_MEMBERS[] = {"max_num_workers"};
+const char *SuperBot::CONFIG_INT_MEMBERS[] = {"max_num_workers", "max_food_cap",
+                                              "food_gap"};
 const int SuperBot::CONFIG_INT_MEMBERS_NUM =
     sizeof(SuperBot::CONFIG_INT_MEMBERS) / sizeof(char *);
 
@@ -83,7 +85,7 @@ void SuperBot::OnUnitIdle(const sc2::Unit *unit) {
   case sc2::UNIT_TYPEID::PROTOSS_PROBE:
   case sc2::UNIT_TYPEID::ZERG_DRONE:
   case sc2::UNIT_TYPEID::TERRAN_SCV: {
-		SendIdleWorkerToMine(unit);
+    SendWorkerToMine(unit);
     break;
   }
 
@@ -127,56 +129,77 @@ void SuperBot::LoadConfig(void) {
   }
 }
 
-bool SuperBot::TryBuildStructure(sc2::ABILITY_ID ability_type_for_structure,
-                                 sc2::UNIT_TYPEID unit_type) {
-  const sc2::ObservationInterface *observation = Observation();
-
-  // If a unit already is building a supply structure of this type, do nothing.
-  // Also get an scv to build the structure.
-  const sc2::Unit *unit_to_build = nullptr;
-  sc2::Units units = observation->GetUnits(sc2::Unit::Alliance::Self);
-  for (const auto &unit : units) {
-    for (const auto &order : unit->orders) {
-      if (order.ability_id == ability_type_for_structure) {
-        return false;
-      }
-    }
-
-    if (unit->unit_type == unit_type) {
-      unit_to_build = unit;
-    }
+// TODO-[RM]-(Sat Oct 06 2018 17:42):  We are not actually building structures.
+// Not sure why
+void SuperBot::BuildStructure(const sc2::Unit *unit_to_build,
+                              sc2::ABILITY_ID ability_type_for_structure,
+                              const sc2::Point2D &location) {
+  if (IsWorker(unit_to_build) == false) {
+    LOG(ERROR)
+        << "[SuperBot::BuildStructure]: Unit provided is not really a worker";
+    return;
   }
 
-  if (unit_to_build == nullptr) {
-    LOG(ERROR) << "[SuperBot::TryBuildStructure]: Bad pointer unit_to_build";
-    return false;
-  }
+	LOG(INFO) << "[SuperBot::BuildStructure]: Building "
+		<< "at location (" << location.x << "," << location.y << ")";
 
-  float rx = sc2::GetRandomScalar();
-  float ry = sc2::GetRandomScalar();
-
-  LOG(INFO) << "[SuperBot::TryBuildStructure]: Building more supply depots";
-  Actions()->UnitCommand(unit_to_build, ability_type_for_structure,
-                         sc2::Point2D(unit_to_build->pos.x + rx * 15.0f,
-                                      unit_to_build->pos.y + ry * 15.0f));
-
-  return true;
+  Actions()->UnitCommand(unit_to_build, ability_type_for_structure, location);
 }
 
 bool SuperBot::TryBuildSupplyDepot() {
   const sc2::ObservationInterface *observation = Observation();
+  int supp_in_constr;
+  auto food_used = observation->GetFoodUsed();
+  auto food_cap = observation->GetFoodCap();
 
-  // If we are not supply capped, don't build a supply depot.
-  if (observation->GetFoodUsed() <= observation->GetFoodCap() - 10)
+  if (food_cap >= IntOpts[MAX_FOOD_CAP])
     return false;
 
-  LOG(INFO) << "[SuperBot::TryBuildSupplyDepot]: " << observation->GetFoodUsed()
-            << "/" << observation->GetFoodCap() << " supply.";
-  // Try and build a depot. Find a random SCV and give it the order.
-  return TryBuildStructure(sc2::ABILITY_ID::BUILD_SUPPLYDEPOT);
+	if ((food_used > (food_cap - IntOpts[FOOD_GAP])) && (food_used < food_cap))
+		return false;
+
+	LOG(INFO) << "[SuperBot::TryBuildSupplyDepot]: Current " << food_used << "/"
+		<< food_cap << " supply.";
+
+	supp_in_constr =
+		GetNumOfBuildingUnderConstr(sc2::ABILITY_ID::BUILD_SUPPLYDEPOT);
+	LOG(INFO) << "[SuperBot::TryBuildSupplyDepot]: Currently there are "
+		<< supp_in_constr << " supply depots in construction";
+	food_cap += supp_in_constr * 8;
+
+	const sc2::Unit *worker = GetUnit(sc2::UNIT_TYPEID::TERRAN_SCV);
+	if (worker == nullptr) {
+		LOG(ERROR) << "[SuperBot::TryBuildSupplyDepot]: Failed to get unit_type";
+		return false;
+	}
+
+	BuildStructure(worker, sc2::ABILITY_ID::BUILD_SUPPLYDEPOT,
+								 GetRandom2dPointNear(worker->pos));
+
+  // Find an SCV
+  // const sc2::Unit *worker = GetUnit(sc2::UNIT_TYPEID::TERRAN_SCV);
+  // if (worker == nullptr) {
+    // LOG(ERROR) << "[SuperBot::TryBuildSupplyDepot]: Failed to get unit_type";
+    // return false;
+  // }
+
+  // // Are we already building a supply depot?
+  // if (GetNumOfBuildingUnderConstr(sc2::ABILITY_ID::BUILD_SUPPLYDEPOT) > 0)
+    // return false;
+
+  // // Order scv to build a supply depot at random location
+  // LOG(INFO) << "[SuperBot::TryBuildSupplyDepot]: Building more supply depots";
+  // BuildStructure(worker, sc2::ABILITY_ID::BUILD_SUPPLYDEPOT,
+                 // GetRandom2dPointNear(worker->pos));
+  return true;
 }
 
-const sc2::Unit *SuperBot::FindNearestUnit(const sc2::Point2D &start, sc2::UNIT_TYPEID unit_type) {
+/// @brief Find a unit of type @p unit_type nearest to @p start
+/// @param start Starting point to look for unit
+/// @param unit_type Type of unit to look for
+/// @return Pointer to unit of this type if provided
+const sc2::Unit *SuperBot::FindNearestUnit(const sc2::Point2D &start,
+                                           sc2::UNIT_TYPEID unit_type) {
   sc2::Units units = Observation()->GetUnits();
   float distance = std::numeric_limits<float>::max();
   const sc2::Unit *target = nullptr;
@@ -192,31 +215,97 @@ const sc2::Unit *SuperBot::FindNearestUnit(const sc2::Point2D &start, sc2::UNIT_
   return target;
 }
 
-const sc2::Unit* SuperBot::GetUnit(sc2::UNIT_TYPEID unit_type) {
+/// @brief Returns a pointer to a unit of the specified type
+/// @param unit_type Specific type of unit requested
+/// @return Pointer to request unit if it exists. nullptr otherwise
+const sc2::Unit *SuperBot::GetUnit(sc2::UNIT_TYPEID unit_type) {
+	sc2::Units units = Observation()->GetUnits();
+  const sc2::Unit *target = nullptr;
+  for (const auto &u : units) {
+    if (u->unit_type == unit_type) {
+      target = u;
+    }
+  }
+  return target;
+}
+
+/// @brief Provided a @p worker sends it to the nearst mineral field
+/// @param worker Pointer to worker that needs to be sent to mine
+void SuperBot::SendWorkerToMine(const sc2::Unit *worker) {
+  if (IsWorker(worker) == false) {
+    LOG(ERROR)
+        << "[SuperBot::SendWorkerToMine]: Unit provided is not really a worker";
+    return;
+  }
+
+  LOG(INFO) << "[SuperBot::SendWorkerToMine]: Found worker hanging out";
+  const sc2::Unit *mineral_target =
+      FindNearestUnit(worker->pos, sc2::UNIT_TYPEID::NEUTRAL_MINERALFIELD);
+  if (mineral_target == nullptr) {
+    LOG(ERROR) << "[SuperBot::SendWorkerToMine]: Failed to find close by "
+                  "mineral field.";
+    return;
+  }
+
+  LOG(INFO) << "[SuperBot::SendWorkerToMine]: Sending worker to mine";
+  Actions()->UnitCommand(worker, sc2::ABILITY_ID::SMART, mineral_target);
+}
+
+/// @brief Determine if unit @p worker is a worker of any race
+/// @param worker Pointer to unit
+/// @return True if its a worker, false otherwise
+bool SuperBot::IsWorker(const sc2::Unit *worker) {
+  if (worker == nullptr) {
+    return false;
+  }
+
+  if ((worker->unit_type.ToType() == sc2::UNIT_TYPEID::PROTOSS_PROBE) ||
+      (worker->unit_type.ToType() == sc2::UNIT_TYPEID::ZERG_DRONE) ||
+      (worker->unit_type.ToType() == sc2::UNIT_TYPEID::TERRAN_SCV)) {
+    return true;
+  }
+
+  return false;
+}
+
+sc2::Point2D SuperBot::GetRandom2dPointNear(const sc2::Point2D &location) {
+  float rx = sc2::GetRandomScalar();
+  float ry = sc2::GetRandomScalar();
+
+  return sc2::Point2D(location.x + rx * 15.0f, location.y + ry * 15.0f);
+}
+
+/// @brief Returns number of buildings of @p ability_type_for_structure type
+/// that are under construction right now
+int SuperBot::GetNumOfBuildingUnderConstr(
+    sc2::ABILITY_ID ability_type_for_structure) {
+  sc2::Units units = Observation()->GetUnits(sc2::Unit::Alliance::Self);
+  int num = 0;
+  for (const auto &unit : units) {
+    for (const auto &order : unit->orders) {
+      if (order.ability_id == ability_type_for_structure) {
+        num++;
+      }
+    }
+  }
+
+  return num;
+}
+
+const sc2::Unit *SuperBot::GetFreeWorker(sc2::UNIT_TYPEID unit_type) {
 	sc2::Units units = Observation()->GetUnits();
 	const sc2::Unit *target = nullptr;
 	for (const auto &u : units) {
 		if (u->unit_type == unit_type) {
-			target = u;
+			LOG(INFO) << "[SuperBot::GetFreeWorker]: Unit has "
+				<< u->orders.size() << " orders";
+			for (const auto &order : u->orders) {
+				if (order.ability_id == 0) {
+					target = u;
+					// break;
+				}
+			}
 		}
 	}
 	return target;
-}
-
-void SuperBot::SendIdleWorkerToMine(const sc2::Unit *worker) {
-	if (worker == nullptr) {
-		LOG(ERROR) << "[SuperBot::SendIdleWorkerToMine]: Bad function input";
-		return;
-	}
-
-	LOG(INFO) << "[SuperBot::OnUnitIdle]: Found worker hanging out";
-	const sc2::Unit *mineral_target =
-		FindNearestUnit(worker->pos, sc2::UNIT_TYPEID::NEUTRAL_MINERALFIELD);
-	if (mineral_target == nullptr) {
-		LOG(ERROR) << "[SuperBot::OnUnitIdle]: Failed to find close by mineral field.";
-		return;;
-	}
-
-	LOG(INFO) << "[SuperBot::OnUnitIdle]: Sending worker to mine";
-	Actions()->UnitCommand(worker, sc2::ABILITY_ID::SMART, mineral_target);
 }
