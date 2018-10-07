@@ -12,21 +12,27 @@
 		"_default" : "Terran",
 		"bot_race" : "Terran",
 		"_comment" : "Use these in order to pass extra options. Remove the '_'",
+		"_comment" : "EGL uses hardware acceleration. Really fast if strong gpu in place",
 		"_default" : "None",
 		"cli_option_0" : "-osmesapath /usr/lib/libOSMesa.so",
-		"_cli_option_1" : "-elgpath /usr/lib/libEGL.so",
+		"_cli_option_0" : "-elgpath /usr/lib/libEGL.so",
 		"_cli_option_2" : "-displayMode 0"
 	},
 	"bot": {
-		"max_num_workers" : 70
+		"_default" : 70,
+		"max_num_workers" : 70,
+		"_default" : 70,
+		"max_food_cap" : 200,
+		"_default" : 12,
+		"food_gap" : 8
 	},
 	"render" : {
 		"_default": false,
 		"on" : true,
 		"_default": 800,
-		"map_x": 800,
+		"map_x": 1200,
 		"_default": 600,
-		"map_y": 600,
+		"map_y": 800,
 		"_default": 300,
 		"mini_map_x": 300,
 		"_default": 300,
